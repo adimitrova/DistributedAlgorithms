@@ -1,0 +1,3 @@
+# Distributed Algorithms course labs (IN4150)
+
+### Lab 1: Birman-Schiper-Stephenson algorithm for causal ordering of broadcast messages
