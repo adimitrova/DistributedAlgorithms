@@ -42,7 +42,7 @@ public class Process {
 		// TODO implement
 	}
 	
-	// send message from this thread to another
+	// send message from this thread to all the other processes
 	public void broadcast(){
         new message("hello",vectorClock);
         // before sending a msg increment by 1 the local clock
