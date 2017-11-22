@@ -9,11 +9,11 @@ public class AdditionServer {
     public static void main(String[] argv) {
         try {
             System.setSecurityManager(new RMISecurityManager());
-
-            Runtime.getRuntime().exec("rmiregistry 1024");
-            LocateRegistry.createRegistry(1024);
+            //System.setProperty("java.security.policy","file:./security.policy");
+            Runtime.getRuntime().exec("rmiregistry 2020");
+            LocateRegistry.createRegistry(2020);
             Addition Hello = new Addition();
-            Naming.rebind("rmi://localhost:1024/Hello", Hello);
+            Naming.rebind("rmi://localhost:2020/Hello", Hello);
 
             System.out.println("Addition Server is ready.");
         }catch (Exception e) {

@@ -6,13 +6,12 @@ import java.rmi.RMISecurityManager;
  */
 public class AdditionClient {
     public static void main (String[] args) {
-        AdditionInterface hello;
+        AdditionInterfaceCl hello;
         try {
             System.setSecurityManager(new RMISecurityManager());
-            hello = (AdditionInterface) Naming.lookup("rmi://localhost:1024/Hello");
+            hello = (AdditionInterfaceCl) Naming.lookup("rmi://localhost:2020/Hello");
             int result = hello.add(9, 10);
             System.out.println("Result is: " + result);
-
         }catch (Exception e) {
             System.out.println("HelloClient Exception: " + e);
         }
