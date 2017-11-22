@@ -1,4 +1,5 @@
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.*;
 
 /**
@@ -9,8 +10,10 @@ public class AdditionServer {
         try {
             System.setSecurityManager(new RMISecurityManager());
 
+            Runtime.getRuntime().exec("rmiregistry 1024");
+            LocateRegistry.createRegistry(1024);
             Addition Hello = new Addition();
-            Naming.rebind("rmi://localhost/ABC", Hello);
+            Naming.rebind("rmi://localhost:1024/Hello", Hello);
 
             System.out.println("Addition Server is ready.");
         }catch (Exception e) {

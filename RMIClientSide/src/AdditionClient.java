@@ -9,7 +9,7 @@ public class AdditionClient {
         AdditionInterface hello;
         try {
             System.setSecurityManager(new RMISecurityManager());
-            hello = (AdditionInterface) Naming.lookup("rmi://localhost/ABC");
+            hello = (AdditionInterface) Naming.lookup("rmi://localhost:1024/Hello");
             int result = hello.add(9, 10);
             System.out.println("Result is: " + result);
 
