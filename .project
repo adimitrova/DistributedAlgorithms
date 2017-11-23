@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>DistributedAlgoLabs</name>
+=======
+	<name>DistributedAlgorithmsLabs</name>
+>>>>>>> ani
 	<comment></comment>
 	<projects>
 	</projects>
