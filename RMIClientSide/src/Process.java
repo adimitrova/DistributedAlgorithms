@@ -17,7 +17,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     Set<message> buffer = new HashSet<message>();
     int nonce = 1;
 
-    public Process(int amountProcesses) throws RemoteException {
+    public Process(int amountProcesses, iplist) throws RemoteException {
         // initialize an empty clock, based on the amount of process in the whole system
         vectorClock = new ArrayList<Integer>(amountProcesses);
     }
