@@ -11,13 +11,13 @@ import java.util.Set;
  * @author Laurens Weijs & Anelia Dimitrova
  * @version 16.11.2017
  */
-public class Process extends UnicastRemoteObject implements ProcessInterface {
+public class Process_LaurensLaurens extends UnicastRemoteObject implements ProcessInterface_Laurens {
     private List<Integer> vectorClock;
     //	private List<String> otherClientRegistries;
     Set<message> buffer = new HashSet<message>();
     int nonce = 1;
 
-    public Process(int amountProcesses, iplist) throws RemoteException {
+    public Process_LaurensLaurens(int amountProcesses, iplist) throws RemoteException {
         // initialize an empty clock, based on the amount of process in the whole system
         vectorClock = new ArrayList<Integer>(amountProcesses);
     }

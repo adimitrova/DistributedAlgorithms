@@ -1,4 +1,3 @@
-import java.net.Inet4Address;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
@@ -11,12 +10,12 @@ public class ProcessClient{
     List<String> ipPortList; // global ip and port list of all processes
 
         public static void main (String[] args) {
-            ProcessInterface process;
+            ProcessInterface_Laurens process;
             try {
                 System.setSecurityManager(new RMISecurityManager());
                 Runtime.getRuntime().exec("rmiregistry 2020");
                 LocateRegistry.createRegistry(2020);
-                process = new Process();
+                process = new Process_LaurensLaurens();
                 // ip = localhost (make sure)
 //                getIp();
                 Naming.rebind("rmi://localhost:2020", process);

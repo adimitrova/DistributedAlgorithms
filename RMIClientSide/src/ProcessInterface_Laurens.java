@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Created by Laurens on 11/17/2017.
  */
-public interface ProcessInterface extends Remote {
+public interface ProcessInterface_Laurens extends Remote {
     public void broadcast(message m) throws RemoteException;
 
     public void receive(message m) throws RemoteException;
