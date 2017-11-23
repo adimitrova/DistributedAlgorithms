@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 public interface ProcessInterface extends Remote {
     public void broadcast(Message m) throws RemoteException;
 
-    public void receive(Message m) throws RemoteException;
+    public void receive(Message m, int vClockIn) throws RemoteException;
 
     public void deliver(Message m) throws RemoteException;
 }
