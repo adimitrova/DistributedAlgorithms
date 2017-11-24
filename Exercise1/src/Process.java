@@ -46,7 +46,9 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 		}
 
 		for(int i = 0; i < amountProcesses; i++){
-			String otherIp = ipPortList.get(i).substring(7,amountProcesses-5);
+			int len = ipPortList.get(i).length();
+			String otherIp = ipPortList.get(i).substring(6,len-5);
+
 			if(otherIp.equals(ip)){
 				indexLocalClock = i;
 			}
@@ -122,7 +124,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 				try{
 					System.setSecurityManager(new RMISecurityManager());
 					otherProcess = (Process) Naming.lookup(ipPortList.get(i));
-					otherProcess.receive(msgIn, indexLocalClock);
+					otherProcess.receive(msgIn, i);
 				}catch (Exception e) {
 					System.out.println("HelloClient Exception: " + e);
 				}
