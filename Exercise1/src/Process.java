@@ -32,28 +32,31 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * @param ipPortList
 	 * @throws RemoteException
 	 */
-	public Process(List<String> ipPortList) throws RemoteException{
+	public Process(List<String> ipPortList, String currentIpPort) throws RemoteException{
 		// add that to be the Clock value of this new process on the index that is the id of the process
 		this.ipPortList = ipPortList; // The list of IPs and port combinations the other processes are located.
 		int amountProcesses = ipPortList.size();
 		vectorClock = new int[amountProcesses]; // Create an vector clock with zeros corresponding to the logical clock
 													// of the whole system.
-		String ip = null;
-		try {
-			ip = Inet4Address.getLocalHost().getHostAddress();
-		} catch(UnknownHostException e){
-			System.out.println("Process Exception: " + e);
-		}
+//		String ip = null;
+//		try {
+//			ip = Inet4Address.getLocalHost().getHostAddress();
+//		} catch(UnknownHostException e){
+//			System.out.println("Process Exception: " + e);
+//		}
 
 		for(int i = 0; i < amountProcesses; i++){
-			int len = ipPortList.get(i).length();
-			String otherIp = ipPortList.get(i).substring(6,len-5);
-
-			if(otherIp.equals(ip)){
-				indexLocalClock = i;
-			}
+		    if(ipPortList.get(i).equals(currentIpPort)){
+		        indexLocalClock = i;
+            }
+//			int len = ipPortList.get(i).length();
+//			String otherIp = ipPortList.get(i).substring(6,len-5);
+//
+//			if(otherIp.equals(ip)){
+//				indexLocalClock = i;
+//			}
 		}
-		System.out.print("joepie");
+
 
 	}
 
