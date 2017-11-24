@@ -28,4 +28,11 @@ public interface ProcessInterface extends Remote {
      * @throws RemoteException
      */
     public void deliver(Message m) throws RemoteException;
+
+    /**
+     * GETTER for the vector clock of the process.
+     * @return an array representing the vector clock of the whole system.
+     * @throws RemoteException
+     */
+    public int[] getVectorClock() throws RemoteException;
 }

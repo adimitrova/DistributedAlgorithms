@@ -5,14 +5,14 @@ import java.util.List;
  */
 public class Message {
     String m;
-    List<Integer> clock;
+    int[] clock;
 
     /**
      * Constructor for the message of the process.
      * @param m the message
      * @param clock the latest known vector clock of the process
      */
-    Message(String m, List<Integer> clock){
+    Message(String m, int[] clock){
     this.m = m;
     this.clock = clock;
     }
@@ -29,7 +29,7 @@ public class Message {
      * Getter for the vector clock given by the process.
      * @return the actual vector clock
      */
-    public List<Integer> getVectorClock(){
+    public int[] getVectorClock(){
         return clock;
     }
 }

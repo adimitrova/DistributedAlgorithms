@@ -96,9 +96,10 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 		updateVectorClock(msgIn);
 
 		// Maybe display the content of the message here.
+		System.out.println(msgIn.getMessage());
 
 		// remove from the buffer
-		if(buffer.contains(msgIn)) {	// if the msg was in buffer, only then remove
+		if(buffer.contains(msgIn)) {
 			buffer.remove(msgIn);
 		}
     }
@@ -110,9 +111,10 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 */
 	@Override
 	public void broadcast(Message msgIn) throws RemoteException {
-        // TODO implement
-        // before sending a msg increment by 1 the local clock
-    }
+		updLocalClock();
+
+		// send message to other parties
+	}
 
 	/**
 	 * Checks whether the vector clock received follows the last received message of that process.
@@ -121,7 +123,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 */
 	private boolean checkVectorClocks(Message m, int index) {
 		boolean deliverable = true;
-		if (!(vectorClock[index] + nonce > m.getVectorClock().get(index))) {
+		if (!(vectorClock[index] + nonce > m.getVectorClock()[index])) {
 			deliverable = false;
 		}
 		return deliverable;
@@ -132,13 +134,22 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * @param m
 	 */
 	private void updateVectorClock(Message m) {
-		int length = m.getVectorClock().size();
+		int length = m.getVectorClock().length;
 		for (int i = 0; i < length; i++) {
-			if ((vectorClock[i]) < m.getVectorClock().get(i)) {
-				vectorClock[i] = m.getVectorClock().get(i);
+			if ((vectorClock[i]) < m.getVectorClock()[i]) {
+				vectorClock[i] = m.getVectorClock()[i];
 			}
 		}
 	}
+
+	/**
+	 * GETTER for the vector clock
+	 */
+	@Override
+	public int[] getVectorClock(){
+		return vectorClock;
+	}
+
 }
 
 
