@@ -8,10 +8,10 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /** 
- * The actual implementation of process in a distributed algorithm.
+ * The actual implementation of a process in a distributed algorithm.
  * 
- * @author Anelia Dimitrova & Laurens Weijs
- * @version 16.11.2017
+ * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
+ * @version 22.11.2017
  */
 public class Process extends UnicastRemoteObject implements ProcessInterface {
 	// vectorClock stores the values of the process local clocks 
@@ -113,9 +113,8 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         // update its own clock
 		updateVectorClock(msgIn);
 
-		// Maybe display the content of the message here.
-		System.out.println(msgIn.getMessage());
-		System.out.println(Arrays.toString(msgIn.getVectorClock()));
+		// print the message + the vector clock to confirm the HB relationship
+		System.out.println(msgIn.getMessage() + Arrays.toString(msgIn.getVectorClock()));
 
 		// remove from the buffer
 		if(buffer.contains(msgIn)) {
@@ -134,7 +133,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         updLocalClock();
 
 		ProcessInterface otherProcess;
-		for (int i = 0; i< ipPortList.size() ;i++ ){
+		for (int i = 0; i< ipPortList.size(); i++ ){
 			if(i != indexLocalClock){
 				try{
 					System.setSecurityManager(new RMISecurityManager());

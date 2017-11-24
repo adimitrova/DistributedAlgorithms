@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Class which creates the connection with the other processes with the help of RMI.
+ * 
+ * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
+ * @version 22.11.2017
  */
 public class ProcessClient_DifferentHost {
     public static List<String> ipPortList; // global ip and port list of all processes

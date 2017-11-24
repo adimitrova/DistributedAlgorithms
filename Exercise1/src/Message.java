@@ -3,6 +3,9 @@ import java.util.List;
 
 /**
  * This class combines the message to send between nodes with the vector clock of the node to send.
+ * 
+ * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
+ * @version 22.11.2017
  */
 public class Message implements Serializable{
     String m;

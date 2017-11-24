@@ -3,6 +3,9 @@ import java.rmi.RemoteException;
 
 /**
  * Interface for the process in order for the client what it can expect from the process.
+ * 
+ * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
+ * @version 22.11.2017
  */
 public interface ProcessInterface extends Remote {
     /**
