@@ -19,10 +19,11 @@ public class ProcessClient{
             ProcessInterface process;
             try {
                 System.setSecurityManager(new RMISecurityManager());
-                Runtime.getRuntime().exec("rmiregistry 2020");
-                LocateRegistry.createRegistry(2020);
+                Runtime.getRuntime().exec("rmiregistry 2021");
+                LocateRegistry.createRegistry(
+                        2021);
                 process = new Process(ipPortList);
-                Naming.rebind("rmi://localhost:2020", process);
+                Naming.rebind("rmi://localhost:2021", process);
 
                 //TODO: the list below.
                 // wait for the other processes to connect to the RMI registry
@@ -31,10 +32,10 @@ public class ProcessClient{
                 // FROM own IP list
 
                 // new process ( which also stores IP and Port list )
-
-                while(true){
-                    process.broadcast(new Message("This is an interesting message!", process.getVectorClock()));
-                }
+//
+//                while(true){
+//                    process.broadcast(new Message("This is an interesting message!", process.getVectorClock()));
+//                }
                 // do something (broad of specific message of this process
                 // maybe through console
 

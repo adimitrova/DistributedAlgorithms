@@ -20,7 +20,7 @@ public interface ProcessInterface extends Remote {
      * @param vClockIn
      * @throws RemoteException
      */
-    public void receive(Message m, int vClockIn, int processID) throws RemoteException;
+    public void receive(Message m, int processID) throws RemoteException;
 
     /**
      * The message is actually deliverd because it was in the right order.

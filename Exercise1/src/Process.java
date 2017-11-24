@@ -1,5 +1,7 @@
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -73,7 +75,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 */
 	// if HB not satisfied, put in buffer and then call deliver() once HB satisfied
 	@Override
-	public void receive(Message msgIn, int vClockIn, int processID) throws RemoteException {
+	public void receive(Message msgIn, int processID) throws RemoteException {
 		if (checkVectorClocks(msgIn, processID )) {
 			deliver(msgIn);
 			while (!buffer.isEmpty()) {
@@ -113,7 +115,20 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	public void broadcast(Message msgIn) throws RemoteException {
 		updLocalClock();
 
-		// send message to other parties
+		Process otherProcess;
+
+		for (int i = 0; i< ipPortList.size() ;i++ ){
+			if(i != indexLocalClock){
+				try{
+					System.setSecurityManager(new RMISecurityManager());
+					otherProcess = (Process) Naming.lookup(ipPortList.get(i));
+					otherProcess.receive(msgIn, indexLocalClock);
+				}catch (Exception e) {
+					System.out.println("HelloClient Exception: " + e);
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -149,8 +164,6 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	public int[] getVectorClock(){
 		return vectorClock;
 	}
-
 }
-
 
 // random note: for the registry each process will have an index that represents it
