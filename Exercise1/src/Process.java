@@ -1,12 +1,11 @@
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /** 
  * The actual implementation of process in a distributed algorithm.
@@ -30,25 +29,32 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * @param ipPortList
 	 * @throws RemoteException
 	 */
-	public Process(List<String> ipPortList) throws RemoteException{
-		// add that to be the Clock value of this new process on the index that is the id of the process
+	public Process(List<String> ipPortList, String currentIpPort) throws RemoteException{
+        System.out.println("Process constructor");
+        // add that to be the Clock value of this new process on the index that is the id of the process
 		this.ipPortList = ipPortList; // The list of IPs and port combinations the other processes are located.
 		int amountProcesses = ipPortList.size();
 		vectorClock = new int[amountProcesses]; // Create an vector clock with zeros corresponding to the logical clock
 													// of the whole system.
-		String ip = null;
-		try {
-			ip = Inet4Address.getLocalHost().getHostAddress();
-		} catch(UnknownHostException e){
-			System.out.println("Process Exception: " + e);
-		}
+//		String ip = null;
+//		try {
+//			ip = Inet4Address.getLocalHost().getHostAddress();
+//		} catch(UnknownHostException e){
+//			System.out.println("Process Exception: " + e);
+//		}
 
 		for(int i = 0; i < amountProcesses; i++){
-			String otherIp = ipPortList.get(i).substring(7,amountProcesses-5);
-			if(otherIp.equals(ip)){
-				indexLocalClock = i;
-			}
+		    if(ipPortList.get(i).equals(currentIpPort)){
+		        indexLocalClock = i;
+            }
+//			int len = ipPortList.get(i).length();
+//			String otherIp = ipPortList.get(i).substring(6,len-5);
+//
+//			if(otherIp.equals(ip)){
+//				indexLocalClock = i;
+//			}
 		}
+
 
 	}
 
@@ -73,8 +79,19 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 */
 	// if HB not satisfied, put in buffer and then call deliver() once HB satisfied
 	@Override
-	public void receive(Message msgIn, int vClockIn, int processID) throws RemoteException {
-		if (checkVectorClocks(msgIn, processID )) {
+	public void receive(Message msgIn, int processID) throws RemoteException {
+        System.out.println("Start receiving");
+
+        // in order to test for the right message ordering
+        if(processID == 1){
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        if (checkVectorClocks(msgIn, processID )) {
 			deliver(msgIn);
 			while (!buffer.isEmpty()) {
 				for (Message elem : buffer) {
@@ -92,13 +109,16 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * Once HB order is satisfied, deliver the message content only, no need to keep the clock value too
 	 */
 	public void deliver(Message msgIn) throws RemoteException {
-		// update its own clock
+        System.out.println("Start delivering");
+        // update its own clock
 		updateVectorClock(msgIn);
 
 		// Maybe display the content of the message here.
+		System.out.println(msgIn.getMessage());
+		System.out.println(Arrays.toString(msgIn.getVectorClock()));
 
 		// remove from the buffer
-		if(buffer.contains(msgIn)) {	// if the msg was in buffer, only then remove
+		if(buffer.contains(msgIn)) {
 			buffer.remove(msgIn);
 		}
     }
@@ -110,9 +130,25 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 */
 	@Override
 	public void broadcast(Message msgIn) throws RemoteException {
-        // TODO implement
-        // before sending a msg increment by 1 the local clock
-    }
+        System.out.println("Broadcast");
+        updLocalClock();
+
+		ProcessInterface otherProcess;
+		for (int i = 0; i< ipPortList.size() ;i++ ){
+			if(i != indexLocalClock){
+				try{
+					System.setSecurityManager(new RMISecurityManager());
+                    otherProcess = (ProcessInterface) Naming.lookup(ipPortList.get(i) +"/process");
+					Message msgOut = new Message(msgIn.getMessage(),msgIn.getVectorClock());
+
+					otherProcess.receive(msgOut, indexLocalClock);
+				}catch (Exception e) {
+					System.out.println("Broadcast Exception: " + e);
+				}
+			}
+		}
+
+	}
 
 	/**
 	 * Checks whether the vector clock received follows the last received message of that process.
@@ -120,8 +156,9 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * @return TRUE, when the message received was indeed like expected
 	 */
 	private boolean checkVectorClocks(Message m, int index) {
-		boolean deliverable = true;
-		if (!(vectorClock[index] + nonce > m.getVectorClock().get(index))) {
+        System.out.println("checkVectorClocks");
+        boolean deliverable = true;
+		if ((vectorClock[index] + nonce != m.getVectorClock()[index])) {
 			deliverable = false;
 		}
 		return deliverable;
@@ -132,14 +169,22 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	 * @param m
 	 */
 	private void updateVectorClock(Message m) {
-		int length = m.getVectorClock().size();
+        System.out.println("Update vectorClock");
+        int length = m.getVectorClock().length;
 		for (int i = 0; i < length; i++) {
-			if ((vectorClock[i]) < m.getVectorClock().get(i)) {
-				vectorClock[i] = m.getVectorClock().get(i);
+			if ((vectorClock[i]) < m.getVectorClock()[i]) {
+				vectorClock[i] = m.getVectorClock()[i];
 			}
 		}
 	}
-}
 
+	/**
+	 * GETTER for the vector clock
+	 */
+	@Override
+	public int[] getVectorClock(){
+		return vectorClock;
+	}
+}
 
 // random note: for the registry each process will have an index that represents it

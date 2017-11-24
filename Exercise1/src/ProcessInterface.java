@@ -17,10 +17,10 @@ public interface ProcessInterface extends Remote {
      * in the expected order to achieve the HB relationship. If this is not the cause it will be put in
      * the buffer.
      * @param m the message to receive
-     * @param vClockIn
+     * @param processID the ID of the process to send the message to
      * @throws RemoteException
      */
-    public void receive(Message m, int vClockIn, int processID) throws RemoteException;
+    public void receive(Message m, int processID) throws RemoteException;
 
     /**
      * The message is actually deliverd because it was in the right order.
@@ -28,4 +28,11 @@ public interface ProcessInterface extends Remote {
      * @throws RemoteException
      */
     public void deliver(Message m) throws RemoteException;
+
+    /**
+     * GETTER for the vector clock of the process.
+     * @return an array representing the vector clock of the whole system.
+     * @throws RemoteException
+     */
+    public int[] getVectorClock() throws RemoteException;
 }
