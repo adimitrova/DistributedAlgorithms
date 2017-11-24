@@ -17,7 +17,7 @@ public interface ProcessInterface extends Remote {
      * in the expected order to achieve the HB relationship. If this is not the cause it will be put in
      * the buffer.
      * @param m the message to receive
-     * @param vClockIn
+     * @param processID the ID of the process to send the message to
      * @throws RemoteException
      */
     public void receive(Message m, int processID) throws RemoteException;

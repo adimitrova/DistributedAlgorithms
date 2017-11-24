@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class combines the message to send between nodes with the vector clock of the node to send.
  */
-public class Message {
+public class Message implements Serializable{
     String m;
     int[] clock;
 

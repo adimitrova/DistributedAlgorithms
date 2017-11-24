@@ -53,6 +53,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 				indexLocalClock = i;
 			}
 		}
+		System.out.print("joepie");
 
 	}
 
@@ -117,16 +118,16 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	public void broadcast(Message msgIn) throws RemoteException {
 		updLocalClock();
 
-		Process otherProcess;
-
+		ProcessInterface otherProcess;
 		for (int i = 0; i< ipPortList.size() ;i++ ){
 			if(i != indexLocalClock){
 				try{
 					System.setSecurityManager(new RMISecurityManager());
-					otherProcess = (Process) Naming.lookup(ipPortList.get(i));
-					otherProcess.receive(msgIn, i);
+					otherProcess = (ProcessInterface) Naming.lookup(ipPortList.get(i) +"/process");
+					Message msgOut = new Message(msgIn.getMessage(),msgIn.getVectorClock());
+					otherProcess.receive(msgOut, i);
 				}catch (Exception e) {
-					System.out.println("HelloClient Exception: " + e);
+					System.out.println("Broadcast Exception: " + e);
 				}
 			}
 		}
