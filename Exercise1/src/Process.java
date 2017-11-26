@@ -27,35 +27,22 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	/**
 	 * Constructor for a single process in a distributed algorithm
 	 * @param ipPortList
+	 * @param currentIpPort 
 	 * @throws RemoteException
 	 */
 	public Process(List<String> ipPortList, String currentIpPort) throws RemoteException{
         System.out.println("Process constructor");
         // add that to be the Clock value of this new process on the index that is the id of the process
-		this.ipPortList = ipPortList; // The list of IPs and port combinations the other processes are located.
+		this.ipPortList = ipPortList; // The list of IPs and port combinations where the other processes are located.
 		int amountProcesses = ipPortList.size();
 		vectorClock = new int[amountProcesses]; // Create an vector clock with zeros corresponding to the logical clock
-													// of the whole system.
-//		String ip = null;
-//		try {
-//			ip = Inet4Address.getLocalHost().getHostAddress();
-//		} catch(UnknownHostException e){
-//			System.out.println("Process Exception: " + e);
-//		}
-
+		
+		// assigning the corresponding local clock index to the current process by looking up its IP and port
 		for(int i = 0; i < amountProcesses; i++){
 		    if(ipPortList.get(i).equals(currentIpPort)){
 		        indexLocalClock = i;
             }
-//			int len = ipPortList.get(i).length();
-//			String otherIp = ipPortList.get(i).substring(6,len-5);
-//
-//			if(otherIp.equals(ip)){
-//				indexLocalClock = i;
-//			}
 		}
-
-
 	}
 
 	/**
