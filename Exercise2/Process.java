@@ -28,10 +28,11 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 	private List<String> ipPortList = new ArrayList<String>(); // List of all the ip addresses of the other processes.
 	int ID;		// current process id: HOW DO WE DECIDE ON THIS ID's value? Random number? Consecutive number?
 	int NID;	// the upstream (previous) neighbour's value of the current process
-	int receivedNNID;	/** this value is received from the upstream neighbour of the curr process and is the max of the 
-				* neighbour's id and the nid of the neighbour before that (i.e. 2nd neighbour before the curr.one)
-				* The current process will this nnid and compute its own nnid from its upstream neighbour nid and its own id
-				* and that will be the nnid it will send to the next process
+	int receivedNNID;	/** this value is received from the upstream (left/previous) neighbour of the curr process 
+				* and is the MAX of 	receivedNNID = MAX(LeftNeighboursID,LeftNeighboursNID)
+				* The current process will store this nnid and compute 
+				* its own NNID from its upstream neighbour's NID and its own ID
+				* and that will be the NNID it will send to the next process (curProcNNID)
 				*/
 	int curProcNNID;	// this process' NNID from comparing max(ID,NID)
 	boolean startProcess;	// is the current process the first process in the ring?
