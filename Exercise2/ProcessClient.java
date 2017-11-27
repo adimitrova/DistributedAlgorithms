@@ -8,6 +8,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Class which creates the connection with the other processes with the help of RMI.
  * 
+ * Peterson's algorithm is explained by teacher in previous years BELOW 
+ * https://collegerama.tudelft.nl/Mediasite/Play/cb6da7ce5002457fb804557758e222a11d?catalog=528e5b24-a2fc-4def-870e-65bd84b28a8c
+ * at time: 0:43:51 
+ * 
  * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
  * @version 22.11.2017
  */
