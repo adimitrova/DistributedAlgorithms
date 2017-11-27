@@ -35,7 +35,6 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 				* and that will be the NNID it will send to the next process (curProcNNID)
 				*/
 	int curProcNNID;	// this process' NNID from comparing max(ID,NID)
-	boolean startProcess;	// is the current process the first process in the ring?
 	boolean status;		// indicates whether the current process is active or passive (relay)
 	boolean elected;	// if the curr process received its own id, it's elected
 	
@@ -115,5 +114,15 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 		}
 		return status;
 	}
+	
+	// if the current process receives its own ID under the ReceivedNNID, then it's elected
+	public boolean isElected(Process procIn) {
+		if(this.getID() == this.getReceivedNNID()) {
+			elected = true;
+		} else {
+			elected = false;
+		}
+		return elected;
+	}	
 }
 
