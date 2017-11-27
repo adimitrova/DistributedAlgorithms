@@ -23,4 +23,12 @@ public interface ProcessInterface extends Remote {
      * @throws RemoteException
      */
     public void receive(int leftNeighbID, int leftNeighbNNID) throws RemoteException;
+	
+	/**
+     * Check if the current process is elected
+     * @param procIn
+     * @return true or false
+     * @throws RemoteException
+     */
+	boolean isElected(Process procIn) throws RemoteException;
 }
