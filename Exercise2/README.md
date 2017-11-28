@@ -1,4 +1,4 @@
-# Process class 
+# Component class 
 
 The current process operates according to Peterson's election algorithm in a unidirectional ring. Every process receives its downstream neighbour's id and compares that with its own id. It sends the higher of the two values to its downstream neighbour 
 Condition for staying active: 
