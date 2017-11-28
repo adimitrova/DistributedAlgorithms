@@ -1,6 +1,10 @@
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+
+import static java.lang.Math.max;
 
 /** 
  * The current component operates according to Peterson's election algorithm
@@ -79,23 +83,28 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
         this.NID = NID;
         this.NNID = NNID;
 
-		// If not one of the first nodes to initialize election
-		if(NNID != 0){
-		    if(status){
-		        // otherComponent.receive(TID, max(TID,NID))
-                if(NID == ID || NNID == ID) elected = true;
-                if(NID >= TID && NID >= NNID) {
-                    TID = NID;
+        try {
+            System.setSecurityManager(new RMISecurityManager());
+            ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
+            // If not one of the first nodes to initialize election
+            if(NNID != 0) {
+                if (status) {
+                    otherComponent.receive(TID, max(TID,NID));
+                    if (NID == ID || NNID == ID) elected = true;
+                    if (NID >= TID && NID >= NNID) {
+                        TID = NID;
+                    } else {
+                        status = false;
+                    }
                 } else {
-                    status = false;
+                    if (NID == ID) elected = true;
+                    otherComponent.receive(NID, NNID);
                 }
-            } else {
-		        if(NID == ID) elected = true;
-		        // otherComponent.receive(NID, NNID);
             }
+        } catch (Exception e) {
+            System.out.println("Broadcast Exception: " + e);
         }
-
-	}
+    }
 
 	/**
 	 * Check if current process is active or passive (relay).

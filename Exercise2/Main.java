@@ -24,6 +24,7 @@ public class Main {
         ipPortList.add("rmi://145.94.167.207:2021");	// Ani proc2
         ipPortList.add("rmi://145.94.152.214:2020");	// Laurens proc 1
 */
+        // initialization of unidirectional ring
         String ip = "192.168.0.109";
         int[] IDs = {7, 4, 9, 12, 1, 3, 8, 2, 6, 5};
         int[] portNumbers = {2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010};
@@ -35,6 +36,8 @@ public class Main {
                 components.add(bindRMIComponent(portNumbers[i],ip,ip + Integer.toString(portNumbers[i+1]),IDs[i]));
             }
         }
+
+        // start the election in the unidirectional ring
 
     }
 
@@ -51,9 +54,9 @@ public class Main {
             System.setSecurityManager(new RMISecurityManager());
             Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
-            String ipPort = "rmi://" + ip + ":" +Integer.toString(portNumber);	// own ip
+            String ipPort = "rmi://" + ip + ":" +Integer.toString(portNumber);
             Component component = new Component(nextIpPort, ID);
-            Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/process", component);
+            Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/component", component);
 
             return component;
         }catch (Exception e) {
@@ -63,29 +66,4 @@ public class Main {
         // Maybe fix by invariant :)
         return null;
     }
-
-    // main program
-    /**
-     * setup the ring
-     * get the first process
-     * first process sets its id, nid and nnid
-     * first process checks whether its nid >= id AND nid => id
-     * if YES ==> Component is marked as Active		add to active list
-     * if NO  ==> Component is marked as Relay (inactive), but stays in the process list		add to passive list
-     * first process sends its id and nnid to the next process
-     * repeat
-     * ---
-     * round 2
-     * flush all inactive processes so we are left with active processes only
-     * repeat the same steps for round 2
-     * ---
-     * repeat the rounds with survivors until one final process/id is elected
-     * remove that process from the process list
-     * ---
-     * when the process is elected, start over with round 1 until the process list is empty
-     *
-     * QUERY: WHAT HAPPENS WITH THE FIRST PROCESS in the round and what values does it get at initialization?
-     * id from the last process in the list???? so that id has ID and NID and no NNID?
-     */
-
 }
