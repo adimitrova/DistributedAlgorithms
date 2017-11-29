@@ -2,7 +2,6 @@ import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
 
 import static java.lang.Math.max;
 
@@ -79,28 +78,36 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 
 	@Override
 	public void receive(int NID, int NNID) throws RemoteException{
-        // updates the
-        this.NID = NID;
-        this.NNID = NNID;
-
-        try {
+		try {
             System.setSecurityManager(new RMISecurityManager());
             ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
-            // If not one of the first nodes to initialize election
-            if(NNID != 0) {
-                if (status) {
-                    otherComponent.receive(TID, max(TID,NID));
-                    if (NID == ID || NNID == ID) elected = true;
-                    if (NID >= TID && NID >= NNID) {
-                        TID = NID;
-                    } else {
-                        status = false;
-                    }
-                } else {
-                    if (NID == ID) elected = true;
-                    otherComponent.receive(NID, NNID);
-                }
-            }
+
+			// needed for the initialization of the election, at the beginning the nodes do not have enough information.
+			if( NID != 0){
+				this.NID = NID;
+			} else {
+				otherComponent.receive(this.TID, 0);
+			}
+
+			if (NNID != 0) {
+				this.NNID = NNID;
+			} else {
+				otherComponent.receive(this.TID, max(this.ID,this.NID));
+			}
+
+            // If not one of the first nodes to initialize election then do the real magic
+			if (status) {
+				otherComponent.receive(TID, max(TID,this.NID));
+				if (this.NID == ID || this.NNID == ID) elected = true;
+				if (this.NID >= TID && this.NID >= this.NNID) {
+					TID = this.NID;
+				} else {
+					status = false;
+				}
+			} else {
+				if (this.NID == ID) elected = true;
+				otherComponent.receive(this.NID, this.NNID);
+			}
         } catch (Exception e) {
             System.out.println("Broadcast Exception: " + e);
         }

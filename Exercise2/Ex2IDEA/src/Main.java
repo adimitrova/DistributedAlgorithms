@@ -3,6 +3,7 @@ import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class which creates an unidirectional connection with several components with the help of RMI.
@@ -25,7 +26,9 @@ public class Main {
         ipPortList.add("rmi://145.94.152.214:2020");	// Laurens proc 1
 */
         // initialization of unidirectional ring
-        String ip = "192.168.0.109";
+//        String ip = "172.26.162.109";
+        String ip = "localhost";
+//        String ip = "192.168.0.109";
         int[] IDs = {7, 4, 9, 12, 1, 3, 8, 2, 6, 5};
         int[] portNumbers = {2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010};
 
@@ -37,8 +40,21 @@ public class Main {
             }
         }
 
-        // start the election in the unidirectional ring
+        // start the election in the unidirectional ring by sending an empty message a random node.
+        try {
+            components.get(0).receive(0, 0);
 
+            // wait a little and find the elected component
+            TimeUnit.SECONDS.sleep(30);
+
+            for(Component comp : components){
+                if(comp.isElected()){
+                    System.out.println("Component with ID: " + Integer.toString(comp.getID()) + " is elected. Hooray!" );
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -52,6 +68,7 @@ public class Main {
     private static Component bindRMIComponent(int portNumber, String ip, String nextIpPort, int ID){
         try{
             System.setSecurityManager(new RMISecurityManager());
+//            System.out.println("rmiregistry " + Integer.toString(portNumber));
             Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" +Integer.toString(portNumber);
