@@ -22,31 +22,31 @@ public class Main {
     public static void main (String[] args) {
         ipPortList = new ArrayList<String>();
         components = new ArrayList<Component>();
-/*      ipPortList.add("rmi://145.94.167.207:1099");	// Ani proc1
-        ipPortList.add("rmi://145.94.167.207:2021");	// Ani proc2
-        ipPortList.add("rmi://145.94.152.214:2020");	// Laurens proc 1
-*/
-        // initialization of unidirectional ring
-        String ip = "145.94.152.192";
-//        String ip = "localhost";
-//        String ip = "192.168.0.109";
-        int[] IDs = {7, 4, 9, 12, 1, 3, 8, 2, 6, 5};
-        int[] portNumbers = {2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010};
 
-        for (int i = 0; i< IDs.length; i++){
-            if(i == IDs.length-1){
-                bindRMIComponent(portNumbers[i],ip,"rmi://" + ip+ ":" + Integer.toString(portNumbers[0]),IDs[i]);
+        // initialization of unidirectional ring
+        String ipLaurens = "145.94.152.192";
+        String ipAni = "145.94.164.48";
+        int[] IDsLaurens = {7, 4, 9, 12, 1};
+        int[] IDsAni = {3, 8, 2, 6, 5};
+        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
+
+        for (int i = 0; i< IDsLaurens.length; i++){
+            if(i == IDsLaurens.length-1){
+                bindRMIComponent(portNumbersLaurens[i],ipLaurens,"rmi://" + ipAni+ ":" + Integer.toString(portNumbersAni[0]),IDsLaurens[i]);
             } else {
-                bindRMIComponent(portNumbers[i],ip,"rmi://" + ip+ ":" + Integer.toString(portNumbers[i+1]),IDs[i]);
+                bindRMIComponent(portNumbersLaurens[i],ipLaurens,"rmi://" + ipLaurens+ ":" + Integer.toString(portNumbersLaurens[i+1]),IDsLaurens[i]);
             }
         }
 
         // start the election in the unidirectional ring by sending an empty message a random node.
         try {
+            TimeUnit.SECONDS.sleep(10);
+
             components.get(0).receive(0, 0);
 
             // wait a little and find the elected component
-            TimeUnit.SECONDS.sleep(30);
+            TimeUnit.SECONDS.sleep(10);
 
 //            for(Component comp : components){
 //                if(comp.isElected()){
@@ -83,3 +83,90 @@ public class Main {
         }
     }
 }
+
+//"C:\Program Files\Java\jdk1.8.0_131\bin\java" -Djava.security.policy=security.policy "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2017.1.2\lib\idea_rt.jar=64845:C:\Program Files\JetBrains\IntelliJ IDEA 2017.1.2\bin" -Dfile.encoding=UTF-8 -classpath "C:\Program Files\Java\jdk1.8.0_131\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_131\jre\lib\rt.jar;C:\Users\Laurens\Documents\DistributedAlgorithms\Exercise2\Ex2IDEA\out\production\Ex2IDEA" Main
+//        ID: 9 TID: 9 Active: falseElected: false
+//        4...7
+//        ID: 12 TID: 12 Active: falseElected: false
+//        9...9
+//        ID: 1 TID: 12 Active: trueElected: false
+//        12...12
+//        ID: 3 TID: 3 Active: falseElected: false
+//        1...12
+//        ID: 8 TID: 8 Active: falseElected: false
+//        3...3
+//        ID: 2 TID: 8 Active: trueElected: false
+//        8...8
+//        ID: 6 TID: 6 Active: falseElected: false
+//        2...8
+//        ID: 5 TID: 6 Active: trueElected: false
+//        6...6
+//        ID: 7 TID: 7 Active: falseElected: false
+//        5...6
+//        ID: 4 TID: 7 Active: trueElected: false
+//        7...7
+//        ID: 9 TID: 9 Active: falseElected: false
+//        4...7
+//        ID: 12 TID: 12 Active: falseElected: false
+//        4...7
+//        ID: 1 TID: 12 Active: falseElected: false
+//        4...7
+//        ID: 3 TID: 3 Active: falseElected: false
+//        12...12
+//        ID: 8 TID: 8 Active: falseElected: false
+//        12...12
+//        ID: 2 TID: 12 Active: trueElected: false
+//        12...12
+//        ID: 6 TID: 6 Active: falseElected: false
+//        8...12
+//        ID: 5 TID: 6 Active: falseElected: false
+//        8...12
+//        ID: 7 TID: 7 Active: falseElected: false
+//        6...8
+//        ID: 4 TID: 7 Active: falseElected: false
+//        6...8
+//        ID: 9 TID: 9 Active: falseElected: false
+//        7...7
+//        ID: 12 TID: 12 Active: falseElected: false
+//        7...7
+//        ID: 1 TID: 12 Active: falseElected: false
+//        7...7
+//        ID: 3 TID: 3 Active: falseElected: false
+//        7...7
+//        ID: 8 TID: 8 Active: falseElected: false
+//        7...7
+//        ID: 2 TID: 12 Active: falseElected: false
+//        7...7
+//        ID: 6 TID: 6 Active: falseElected: false
+//        12...12
+//        ID: 5 TID: 6 Active: falseElected: false
+//        12...12
+//        ID: 7 TID: 7 Active: falseElected: false
+//        12...12
+//        ID: 4 TID: 7 Active: falseElected: false
+//        12...12
+//        ID: 9 TID: 9 Active: falseElected: false
+//        12...12
+//        ID: 12 TID: 12 Active: falseElected: true
+//        12...12
+//        ID: 1 TID: 12 Active: falseElected: false
+//        12...12
+//        ID: 3 TID: 3 Active: falseElected: false
+//        12...12
+//        ID: 8 TID: 8 Active: falseElected: false
+//        12...12
+//        ID: 2 TID: 12 Active: falseElected: false
+//        12...12
+//        ID: 6 TID: 6 Active: falseElected: false
+//        12...12
+//        ID: 5 TID: 6 Active: falseElected: false
+//        12...12
+//        ID: 7 TID: 7 Active: falseElected: false
+//        12...12
+//        ID: 4 TID: 7 Active: falseElected: false
+//        12...12
+//        ID: 9 TID: 9 Active: falseElected: false
+//        12...12
+//
+//        Process finished with exit code 1
+
