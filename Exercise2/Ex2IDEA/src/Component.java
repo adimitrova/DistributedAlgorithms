@@ -50,6 +50,7 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 		this.ipPortUpstreamComp = ipPortString;
 		this.ID = ID;
 		this.TID = ID;
+		this.status = true;
 	}
 	
 	/**
@@ -78,9 +79,11 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 
 	@Override
 	public void receive(int NID, int NNID) throws RemoteException{
-		try {
+		System.out.println("ID: " + ID + " TID: " + TID + " Active: " + status + "Elected: " + elected);
+        System.out.println(NID + "..." + NNID);
+        try {
             System.setSecurityManager(new RMISecurityManager());
-            ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
+			ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
 
 			// needed for the initialization of the election, at the beginning the nodes do not have enough information.
 			if( NID != 0){
@@ -96,20 +99,20 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 			}
 
             // If not one of the first nodes to initialize election then do the real magic
-			if (status) {
-				otherComponent.receive(TID, max(TID,this.NID));
-				if (this.NID == ID || this.NNID == ID) elected = true;
-				if (this.NID >= TID && this.NID >= this.NNID) {
-					TID = this.NID;
-				} else {
-					status = false;
-				}
-			} else {
-				if (this.NID == ID) elected = true;
-				otherComponent.receive(this.NID, this.NNID);
-			}
+            if (status) {
+                if (this.NID == ID || this.NNID == ID) elected = true;
+                if (this.NID >= TID && this.NID >= this.NNID) {
+                    TID = this.NID;
+                } else {
+                    status = false;
+                }
+                otherComponent.receive(TID, max(TID,this.NID));
+            } else {
+                if (this.NID == ID) elected = true;
+                otherComponent.receive(this.NID, this.NNID);
+            }
         } catch (Exception e) {
-            System.out.println("Broadcast Exception: " + e);
+            System.out.println("Receive Exception: " + e);
         }
     }
 

@@ -21,22 +21,23 @@ public class Main {
 
     public static void main (String[] args) {
         ipPortList = new ArrayList<String>();
+        components = new ArrayList<Component>();
 /*      ipPortList.add("rmi://145.94.167.207:1099");	// Ani proc1
         ipPortList.add("rmi://145.94.167.207:2021");	// Ani proc2
         ipPortList.add("rmi://145.94.152.214:2020");	// Laurens proc 1
 */
         // initialization of unidirectional ring
-//        String ip = "172.26.162.109";
-        String ip = "localhost";
+        String ip = "145.94.152.192";
+//        String ip = "localhost";
 //        String ip = "192.168.0.109";
         int[] IDs = {7, 4, 9, 12, 1, 3, 8, 2, 6, 5};
         int[] portNumbers = {2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010};
 
         for (int i = 0; i< IDs.length; i++){
             if(i == IDs.length-1){
-                components.add(bindRMIComponent(portNumbers[i],ip,ip + Integer.toString(portNumbers[0]),IDs[i]));
+                bindRMIComponent(portNumbers[i],ip,"rmi://" + ip+ ":" + Integer.toString(portNumbers[0]),IDs[i]);
             } else {
-                components.add(bindRMIComponent(portNumbers[i],ip,ip + Integer.toString(portNumbers[i+1]),IDs[i]));
+                bindRMIComponent(portNumbers[i],ip,"rmi://" + ip+ ":" + Integer.toString(portNumbers[i+1]),IDs[i]);
             }
         }
 
@@ -62,25 +63,20 @@ public class Main {
      * @param portNumber port on which the RMI bind will be placed.
      * @param ip the ip on which the RMI will bind the component.
      * @param nextIpPort the IP Portnumber combination of the next component in the unidirectional circle.
-     * @param ID The ID of the current component.
+     * @param ID The ID of the current component.System.setSecurityManager(new RMISecurityManager());
      * @return
      */
-    private static Component bindRMIComponent(int portNumber, String ip, String nextIpPort, int ID){
+    private static void bindRMIComponent(int portNumber, String ip, String nextIpPort, int ID){
         try{
             System.setSecurityManager(new RMISecurityManager());
-//            System.out.println("rmiregistry " + Integer.toString(portNumber));
             Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
-            String ipPort = "rmi://" + ip + ":" +Integer.toString(portNumber);
+            String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
             Component component = new Component(nextIpPort, ID);
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/component", component);
-
-            return component;
+            components.add(component);
         }catch (Exception e) {
             System.out.println("Client Exception: " + e);
         }
-
-        // Maybe fix by invariant :)
-        return null;
     }
 }
