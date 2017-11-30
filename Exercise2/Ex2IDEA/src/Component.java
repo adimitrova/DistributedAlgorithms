@@ -2,6 +2,7 @@ import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.max;
 
@@ -79,8 +80,7 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 
 	@Override
 	public void receive(int NID, int NNID) throws RemoteException{
-		System.out.println("ID: " + ID + " TID: " + TID + " Active: " + status + "Elected: " + elected);
-        System.out.println(NID + "..." + NNID);
+
         try {
             System.setSecurityManager(new RMISecurityManager());
 			ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
@@ -95,20 +95,29 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 			if (NNID != 0) {
 				this.NNID = NNID;
 			} else {
-				otherComponent.receive(this.TID, max(this.ID,this.NID));
+				otherComponent.receive(this.TID, max(this.TID,this.NID));
 			}
+
+			if(elected){
+                TimeUnit.MINUTES.sleep(1);
+            }
 
             // If not one of the first nodes to initialize election then do the real magic
             if (status) {
+                int sendTID = TID;
                 if (this.NID == ID || this.NNID == ID) elected = true;
                 if (this.NID >= TID && this.NID >= this.NNID) {
-                    TID = this.NID;
+                    this.TID = this.NID;
                 } else {
                     status = false;
                 }
-                otherComponent.receive(TID, max(TID,this.NID));
+                System.out.println("ID: " + ID + " TID: " + TID + " Active: " + status + "Elected: " + elected);
+                System.out.println(NID + "..." + NNID);
+                otherComponent.receive(sendTID, max(sendTID,this.NID));
             } else {
                 if (this.NID == ID) elected = true;
+                System.out.println("ID: " + ID + " TID: " + TID + " Active: " + status + " Elected: " + elected);
+                System.out.println(NID + "..." + NNID);
                 otherComponent.receive(this.NID, this.NNID);
             }
         } catch (Exception e) {

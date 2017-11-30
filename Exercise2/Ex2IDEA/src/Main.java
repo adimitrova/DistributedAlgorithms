@@ -48,11 +48,14 @@ public class Main {
             // wait a little and find the elected component
             TimeUnit.SECONDS.sleep(30);
 
-            for(Component comp : components){
-                if(comp.isElected()){
-                    System.out.println("Component with ID: " + Integer.toString(comp.getID()) + " is elected. Hooray!" );
-                }
-            }
+//            for(Component comp : components){
+//                if(comp.isElected()){
+//                    System.out.println("Component with ID: " + Integer.toString(comp.getID()) + " is elected. Hooray!" );
+//                }
+//            }
+
+            TimeUnit.MINUTES.sleep(5);
+
         } catch (Exception e){
             e.printStackTrace();
         }
