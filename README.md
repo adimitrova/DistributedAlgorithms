@@ -8,4 +8,6 @@ with Java/RMI. The implemented program should be truly distributed in that the i
 Implement Peterson’s algorithm for election in a unidirectional ring with Java/RMI. The implemented program should be truly distributed in that it can be demonstrated to run across multiple
 physical machines. 
 
-### Lab 3: TBA
+### Lab 3: Randomized Byzantine Agreement for consensus
+Implement the randomized algorithm for Byzantine Agreement in synchronous and asynchronous
+systems with a completely connected network (Algorithm 5.11 in the lecture notes)
