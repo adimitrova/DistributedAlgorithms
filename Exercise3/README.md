@@ -1,0 +1,1 @@
+[![N|SOLID](Exercise3/Byzantine Class Diagram.png)](Byzantine Agreement Class Diagram)
