@@ -4,44 +4,77 @@ import java.util.List;
 
 public class Byzantine extends UnicastRemoteObject implements ByzantineInterface{
 	int round;	// round
-	int nodesParticipating;
+//	int nodesParticipating;
 	public static List<String> ipPortList; // global ip and port list of all processes
     public static List<Node> nodeList;
     public int faultTolerance = 0;        // faulty processes we allow
-	
-	protected Byzantine() throws RemoteException {
-		faultTolerance = nodeList.size()/5;
+	public boolean decided;
+	public Node node;
+	public int amountNodes;
+
+	protected Byzantine(int id, List<String> ipPorts, int n, int f) throws RemoteException {
+		amountNodes = n;
+		faultTolerance = f;
+		node = new Node(id, ipPorts);
 		round = 1;
-	}
-	
-	public static void addNode(int ID, String ipPortString) {
-		Node node = new Node(ID, ipPortString);
-		nodeList.add(node);
-	}
-	
-	public void setNextRound() {
-		round++;
-	}
-	
-	public void algorithm(int v) {
-		System.out.println("Byzantine agreement started..");
-		int nodesParticipating = nodeList.size();
-		int traitors = faultTolerance;
-		
-		boolean flag = true;
-		while(flag) {
-			try {
-				broadcast('N', round, v);
-				
-			} catch (RemoteException e) {
-				e.printStackTrace();
+		decided = false;
+
+		// the do forever loop in the Lecture Nodes
+		while(true){
+			broadcast('N',round, node.getOwnValue());
+			if(node.getAmountNotified(round) > (amountNodes - faultTolerance)){
+				List<Integer> notifications = node.getNvalues(round);
+
+				// Count the different values, if large than the half decide otherwise propose i don't know!
+				int countZero = 0;
+                int countOne = 0;
+				for (Integer elem: notifications) {
+                    if(elem == 1){
+                        countOne++;
+                    }else if(elem == 0){
+                        countZero++;
+                    }
+                }
+                // send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
+                if((countZero > (amountNodes + faultTolerance)/2)){
+                    broadcast('P', round, 0);
+                } else if((countOne > (amountNodes + faultTolerance)/2)){
+                    broadcast('P', round, 1);
+                } else {
+                    broadcast('P', round, -1);
+                }
+
+                if(decided) {
+                    break;
+                }
+
+
+
+				round++;
 			}
 		}
 	}
 
 	@Override
 	public void broadcast(char MsgType, int round, int value) throws RemoteException{
-		
+		if(MsgType == 'N'){
+
+		}
+		if(MsgType == 'P'){
+
+		}
+	}
+
+	@Override
+	public void receive(char MsgType, int round, int value) throws RemoteException {
+		if(MsgType == 'N'){
+		    int[] msg = {round, value};
+            node.addNValue(msg);
+		}
+		if(MsgType == 'P'){
+            int[] msg = {round, value};
+            node.addPValue(msg);
+		}
 	}
 
 	@Override

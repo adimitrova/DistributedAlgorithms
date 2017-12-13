@@ -12,12 +12,8 @@ import java.util.Map;
  * @version 22.11.2017
  */
 public class Node implements Serializable{
-	
-	public static void main(String[] args) {
-		
-	}
-	
-	private String ipPortUpstreamComp; // IP Port combination of the location of its upstream component.
+
+	private List<String> ipPorts; // IP Port combination of the location of its upstream component.
     private int nodeID;
     private List<ArrayList<Integer>> proposalValues;
     private List<ArrayList<Integer>> notificationValues;
@@ -31,11 +27,9 @@ public class Node implements Serializable{
      * also initializes the lists
      * @param nodeid
      */
-    Node(int nodeid, String ipPort){
+    Node(int nodeid, List<String> ipPorts){
     	nodeID = nodeid;
-    	ipPortUpstreamComp = ipPort;
-    	decided = false;
-    	ownValue = -1;
+        this.ipPorts = ipPorts;
     	proposalValues = new ArrayList<ArrayList<Integer>>();
     	notificationValues = new ArrayList<ArrayList<Integer>>(); 
     	decidedPerRound = new ArrayList<ArrayList<Integer>>();
@@ -45,65 +39,65 @@ public class Node implements Serializable{
      * round value is added as first and the proposed value is second, in the form of an array
      * addPValue(2,0) will mean that it's round 2 and the value is 0 
      */
-    public void addPValue(Integer[] roundAndValueIn) {
-    	ArrayList<Integer> innerList = new ArrayList<Integer>();
-		innerList.addAll(Arrays.asList(roundAndValueIn));
-		proposalValues.add(innerList);
+    public void addPValue(int[] roundAndValueIn) {
+        int r = roundAndValueIn[0];
+        int v = roundAndValueIn[1];
+        // check whether the amount of round already encountered is like expectation,
+        // otherwise grow the size of its own Database of Proposals with the according amount of rounds.
+        int diff = proposalValues.size() - r;
+        if(diff > 0) {
+            for (int i = 0; i < diff; i++) {
+                proposalValues.add(new ArrayList<Integer>());
+            }
+        }
+        // Add the value of the proposal to its own list of proposals per round
+        proposalValues.get(r).add(v);
     }
 
     /** 
      * round value is added as first and the proposed value is second, in the form of an array
      * addPValue(2,0) will mean that it's round 2 and the value is 0 
      */
-    public void addNValue(Integer[] roundAndValueIn) {
-    	ArrayList<Integer> innerList = new ArrayList<Integer>();
-		innerList.addAll(Arrays.asList(roundAndValueIn));
-		notificationValues.add(innerList);
-    }
-    
-    public void addDecidedRoundVaue(Integer[] roundAndValueIn) {
-    	ArrayList<Integer> innerList = new ArrayList<Integer>();
-		innerList.addAll(Arrays.asList(roundAndValueIn));
-		decidedPerRound.add(innerList);
+    public void addNValue(int[] roundAndValueIn) {
+        // documentation see addPValue
+        int r = roundAndValueIn[0];
+        int v = roundAndValueIn[1];
+        int diff = notificationValues.size() - r;
+        if(diff > 0) {
+            for (int i = 0; i < diff; i++) {
+                notificationValues.add(new ArrayList<Integer>());
+            }
+        }
+        notificationValues.get(r).add(v);
     }
     
     public List<Integer> getPvalues(int roundIn){
-    	List<Integer> tempList = new ArrayList<Integer>();
-    	for (ArrayList<Integer> list : proposalValues) {
-			if(list.get(0) == roundIn) {
-				tempList.addAll(list);
-			}
-		}
-    	return tempList;
+    	return proposalValues.get(roundIn);
     }
     
     public List<Integer> getNvalues(int roundIn){
-    	List<Integer> tempList = new ArrayList<Integer>();
-    	for (ArrayList<Integer> list : notificationValues) {
-			if(list.get(0) == roundIn) {
-				tempList.addAll(list);
-			}
-		}
-    	return tempList;
+        return notificationValues.get(roundIn);
     }
-    
-    public List<Integer> getDecidedValues(int roundIn){
-    	List<Integer> tempList = new ArrayList<Integer>();
-    	for (ArrayList<Integer> list : decidedPerRound) {
-			System.out.println(list);
-		}
-    	return tempList;
-    }
-    
+
     public void setOwnValue(int v) {
     	ownValue = v;
     }
-    
-    public void decide(int round, int w) {
-    	decided = true;
-    	ownValue = w;
-    	Integer[] decision = {round, w};
-    	System.out.println("Value decided: " + ownValue + " | round: " + round);
->>>>>>> origin/AniEx3
+
+    public int getOwnValue(){
+        return ownValue;
+    }
+
+    public int getAmountNotified(int round){
+        if(notificationValues.size() < round){
+            return notificationValues.get(round).size();
+        }
+        return 0;
+    }
+
+    public int getAmountProposed(int round){
+        if(proposalValues.size() < round){
+            return proposalValues.get(round).size();
+        }
+        return 0;
     }
 }
