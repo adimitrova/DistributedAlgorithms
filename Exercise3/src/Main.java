@@ -26,54 +26,52 @@ public class Main {
         int[] IDsAni = {3, 8, 2, 6, 5};
         int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
         int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
+        int amountFaulty = 1 ;
 
-        for (int i = 0; i< IDsLaurens.length; i++){
-            if(i == IDsLaurens.length-1){
-                bindRMIComponent(portNumbersLaurens[i],ipLaurens,"rmi://" + ipAni+ ":" + Integer.toString(portNumbersAni[0]),IDsLaurens[i]);
-            } else {
-                bindRMIComponent(portNumbersLaurens[i],ipLaurens,"rmi://" + ipLaurens+ ":" + Integer.toString(portNumbersLaurens[i+1]),IDsLaurens[i]);
-            }
+        // Create the fully connected Network
+        for (int i = 0; i< IDsLaurens.length; i++) {
+            ipPortList.add("rmi://" + ipLaurens + ":" + Integer.toString(portNumbersLaurens[i]));
         }
 
-        // FROM EXERCISE 2
-//
-//        // start the election in the unidirectional ring by sending an empty message a random node.
-//        try {
-//            TimeUnit.SECONDS.sleep(10);
-//
-//            components.get(0).receive(0, 0);
-//
-//            // wait a little and find the elected component
-//            TimeUnit.SECONDS.sleep(10);
-//
-////            for(Component comp : components){
-////                if(comp.isElected()){
-////                    System.out.println("Component with ID: " + Integer.toString(comp.getID()) + " is elected. Hooray!" );
-////                }
-////            }
-//
-//            TimeUnit.MINUTES.sleep(5);
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
+        for (int i = 0; i< IDsAni.length; i++) {
+            ipPortList.add("rmi://" + ipAni + ":" + Integer.toString(portNumbersAni[i]));
+        }
+
+        int ID = 0;
+        // Create each byzantine node
+        for(String nodeIp: ipPortList) {
+            List<String> tempIpPorts = new ArrayList<String>();
+            for (String otherNodeIp : ipPortList) {
+                if (!otherNodeIp.equals(nodeIp)) {
+                    tempIpPorts.add(otherNodeIp);
+                }
+            }
+            nodeIp = nodeIp.substring(6);
+            String[] ipPort = nodeIp.split(":");
+            String ip = ipPort[0];
+            int port = Integer.parseInt(ipPort[1]);
+            bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty);
+            ID++;
+        }
     }
 
     /**
      * Method to return a component which is binded to the IP and port specified.
      * @param portNumber port on which the RMI bind will be placed.
      * @param ip the ip on which the RMI will bind the component.
-     * @param nextIpPort the IP Portnumber combination of the next component in the unidirectional circle.
-     * @param ID The ID of the current component.System.setSecurityManager(new RMISecurityManager());
+     * @param nextIpPorts the IP Portnumber combination of the next component in the unidirectional circle.
+     * @param ID The ID of the current component.System.setSecurityManager(new RMISecurityManager()).
+     * @param n the amount of nodes in the network (#length ipPortList + itself).
+     * @param f the amount of faulty byzantines in the fully connected network.
      * @return
      */
-    private static void bindRMIComponent(int portNumber, String ip, String nextIpPort, int ID){
+    private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f){
         try{
             System.setSecurityManager(new RMISecurityManager());
             Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
-            Byzantine byzantine = new Byzantine(ID, nextIpPort);
+            Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f);
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine", byzantine);
             byzantines.add(byzantine);
         }catch (Exception e) {

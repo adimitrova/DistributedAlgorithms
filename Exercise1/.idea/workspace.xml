@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f03fe360-2233-4814-9dd2-80fd837db115" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Exercise2/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Exercise2/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Exercise3/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Exercise3/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Exercise3/src/Byzantine.java" afterPath="$PROJECT_DIR$/../Exercise3/src/Byzantine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Exercise3/src/ByzantineInterface.java" afterPath="$PROJECT_DIR$/../Exercise3/src/ByzantineInterface.java" />
-    </list>
+    <list default="true" id="f03fe360-2233-4814-9dd2-80fd837db115" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,8 +15,8 @@
       <file leaf-file-name="Process.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Process.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="134" column="9" lean-forward="true" selection-start-line="121" selection-start-column="8" selection-end-line="134" selection-end-column="9" />
+            <state relative-caret-position="174">
+              <caret line="120" column="0" lean-forward="true" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
               <folding>
                 <marker date="1511900467413" expanded="true" signature="264:301" ph="/**...*/" />
                 <marker date="1511900467413" expanded="true" signature="4153:4586" ph="{...}" />
@@ -640,12 +634,12 @@
       <workItem from="1511970145717" duration="27000" />
       <workItem from="1512033759780" duration="391000" />
       <workItem from="1512727777066" duration="1323000" />
-      <workItem from="1513191197480" duration="148000" />
+      <workItem from="1513191197480" duration="177000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22218000" />
+    <option name="totallyTimeSpent" value="22247000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="0" />
@@ -1130,8 +1124,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Process.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="134" column="9" lean-forward="true" selection-start-line="121" selection-start-column="8" selection-end-line="134" selection-end-column="9" />
+        <state relative-caret-position="174">
+          <caret line="120" column="0" lean-forward="true" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
           <folding>
             <marker date="1511900467413" expanded="true" signature="264:301" ph="/**...*/" />
             <marker date="1511900467413" expanded="true" signature="4153:4586" ph="{...}" />
