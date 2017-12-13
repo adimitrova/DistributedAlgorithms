@@ -1,6 +1,7 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Random;
 
 public class Byzantine extends UnicastRemoteObject implements ByzantineInterface{
 	int round;	// round
@@ -9,6 +10,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
     public static List<Node> nodeList;
     public int faultTolerance = 0;        // faulty processes we allow
 	public boolean decided;
+	public int decidedValue;
 	public Node node;
 	public int amountNodes;
 
@@ -43,13 +45,37 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 } else {
                     broadcast('P', round, -1);
                 }
-
+                // stop if decided what to do in this round
                 if(decided) {
                     break;
+                } else if(node.getAmountProposed(round) > (amountNodes - faultTolerance)) {
+                    List<Integer> proposals = node.getPvalues(round);
+                    // Count the different values, if large than the half decide otherwise propose i don't know!
+                    countZero = 0;
+                    countOne = 0;
+                    for (Integer elem : proposals) {
+                        if (elem == 1) {
+                            countOne++;
+                        } else if (elem == 0) {
+                            countZero++;
+                        }
+                    }
+
+                    // send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
+                    if (countZero > faultTolerance) {
+                        node.setOwnValue(0);
+                        if (countZero > 3 * faultTolerance) {
+                            decidedValue = 0;
+                            decided = true;
+                        }
+                    } else if (countOne > faultTolerance) {
+                        node.setOwnValue(1);
+                    } else {
+                        // decide a random value between 0 and 1
+                        Random random = new Random();
+                        node.setOwnValue(random.nextInt(1));
+                    }
                 }
-
-
-
 				round++;
 			}
 		}
