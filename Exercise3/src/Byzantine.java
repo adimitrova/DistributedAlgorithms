@@ -1,3 +1,5 @@
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -7,7 +9,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	int round;	// round
 //	int nodesParticipating;
 	public static List<String> ipPortList; // global ip and port list of all processes
-    public static List<Node> nodeList;
     public int faultTolerance = 0;        // faulty processes we allow
 	public boolean decided;
 	public int decidedValue;
@@ -17,6 +18,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	protected Byzantine(int id, List<String> ipPorts, int n, int f) throws RemoteException {
 		amountNodes = n;
 		faultTolerance = f;
+		ipPortList = ipPorts;
 		node = new Node(id, ipPorts);
 		round = 1;
 		decided = false;
@@ -83,12 +85,16 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 
 	@Override
 	public void broadcast(char MsgType, int round, int value) throws RemoteException{
-		if(MsgType == 'N'){
-
-		}
-		if(MsgType == 'P'){
-
-		}
+        ByzantineInterface otherByzantine;
+        for (int i = 0; i< ipPortList.size(); i++ ){
+            try{
+                System.setSecurityManager(new RMISecurityManager());
+                otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
+                otherByzantine.receive(MsgType  , round, value);
+            }catch (Exception e) {
+                System.out.println("Broadcast Exception: " + e);
+            }
+        }
 	}
 
 	@Override
@@ -104,7 +110,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	}
 
 	@Override
-	public void decide() throws RemoteException{
-		
+	public boolean hasDecided() throws RemoteException{
+        return decided;
 	}
 }

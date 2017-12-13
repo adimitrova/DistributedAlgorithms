@@ -11,8 +11,7 @@ public interface ByzantineInterface extends Remote {
 	public void broadcast(char MsgType, int round, int value) throws RemoteException;
 
 	public void receive(char MsgType, int round, int value) throws RemoteException;
-	
-	public void decide() throws RemoteException;
 
+	public boolean hasDecided() throws RemoteException;
 
 }
