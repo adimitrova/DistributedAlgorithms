@@ -21,7 +21,7 @@ public class Main {
 
         // initialization of unidirectional ring
         String ipLaurens = "145.94.153.224";
-        String ipAni = "145.94.164.48";
+        String ipAni = "145.94.167.195";
         int[] IDsLaurens = {7, 4, 9, 12, 1};
 //        int[] IDsAni = {3, 8, 2, 6, 5};
         int[] IDsAni = {};

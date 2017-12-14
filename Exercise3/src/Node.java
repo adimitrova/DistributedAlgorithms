@@ -36,7 +36,8 @@ public class Node implements Serializable{
 
     /** 
      * round value is added as first and the proposed value is second, in the form of an array
-     * addPValue(2,0) will mean that it's round 2 and the value is 0 
+     * addPValue(2,0) will mean that it's round 2 and the value is 0
+     * the index of the inner list indicates the round number and we access it that way
      */
     public void addPValue(int[] roundAndValueIn) {
         int r = roundAndValueIn[0];
