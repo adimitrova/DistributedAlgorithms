@@ -83,7 +83,6 @@ public class Main {
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
             Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f);
-            System.out.println("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine -> bind a new byzantine");
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine", byzantine);
             byzantines.add(byzantine);
         }catch (Exception e) {

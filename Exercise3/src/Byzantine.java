@@ -30,16 +30,14 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	@Override
 	public void broadcast(char MsgType, int round, int value) throws RemoteException{
 		System.out.println("Broadcast: " + MsgType + " Value: " + value + " Round: " + round);
-        System.out.println(ipPortList.toString());
         ByzantineInterface otherByzantine;
         for (int i = 0; i< ipPortList.size(); i++ ){
             try{
-            	// connect to a second Byzantine process and send to it the broadcast. 
-            	// that second process received the message
+                // connect to a second Byzantine process and send to it the broadcast.
+                // that second process receives the message.
                 System.setSecurityManager(new RMISecurityManager());
-                System.out.println(ipPortList.get(i) + "/byzantine");
                 otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
-                otherByzantine.receive(MsgType  , round, value);
+                otherByzantine.receive(MsgType, round, value);
             }catch (Exception e) {
                 System.out.println("Broadcast Exception: " + e);
             }
@@ -56,7 +54,11 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 node.addNValue(msg);
                 System.out.println("Ready to broadcast!");
                 broadcast('N', round, value);
+            } else {
+                int[] msg = {round, value};
+                node.addNValue(msg);
             }
+            System.out.println("I have received: " + node.getAmountNotified(round) + " messages" );
             if(node.getAmountNotified(round) > (amountNodes - faultTolerance)){
                 List<Integer> notifications = node.getNvalues(round);
                 int countZero = 0;

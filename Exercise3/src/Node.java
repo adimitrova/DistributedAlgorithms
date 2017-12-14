@@ -63,24 +63,20 @@ public class Node {
         int r = roundAndValueIn[0];
         int v = roundAndValueIn[1];
         int diff = r - notificationValues.size();
-        System.out.println("joepie!?");
-        System.out.println(diff);
         if(diff > 0) {
             for (int i = 0; i < diff; i++) {
                 notificationValues.add(new ArrayList<Integer>());
-                System.out.println("joepie2!?");
             }
         }
         notificationValues.get(r-1).add(v);
-        System.out.println("joepie3!?");
     }
     
     public List<Integer> getPvalues(int roundIn){
-    	return proposalValues.get(roundIn);
+    	return proposalValues.get(roundIn-1);
     }
     
     public List<Integer> getNvalues(int roundIn){
-        return notificationValues.get(roundIn);
+        return notificationValues.get(roundIn-1);
     }
 
     public void setOwnValue(int v) {
