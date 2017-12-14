@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Byzantine extends UnicastRemoteObject implements ByzantineInterface{
 	int round;	// round
@@ -22,6 +23,13 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 		node = new Node(id, ipPorts);
 		round = 1;
 		decided = false;
+
+		// wait until all nodes are connected to the network.
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
 		// the do forever loop in the Lecture Nodes
 		while(true){
@@ -93,6 +101,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
         for (int i = 0; i< ipPortList.size(); i++ ){
             try{
                 System.setSecurityManager(new RMISecurityManager());
+                System.out.println(ipPortList.get(i) + "/byzantine");
                 otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
                 otherByzantine.receive(MsgType  , round, value);
             }catch (Exception e) {
