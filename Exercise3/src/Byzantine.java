@@ -22,6 +22,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 		node = new Node(id, ipPorts);
 		round = 1;
 		decided = false;
+		System.out.println("Starting Byzantine");
 
 		// the do forever loop in the Lecture Nodes
 		while(true){
@@ -89,9 +90,12 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 
 	@Override
 	public void broadcast(char MsgType, int round, int value) throws RemoteException{
+		System.out.println("Broadcast: " + MsgType + " Value: " + value + " Round: " + round);
         ByzantineInterface otherByzantine;
         for (int i = 0; i< ipPortList.size(); i++ ){
             try{
+            	// connect to a second Byzantine process and send to it the broadcast. 
+            	// that second process received the message
                 System.setSecurityManager(new RMISecurityManager());
                 otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
                 otherByzantine.receive(MsgType  , round, value);
@@ -103,6 +107,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 
 	@Override
 	public void receive(char MsgType, int round, int value) throws RemoteException {
+		System.out.println("Received: " + MsgType + " Value: " + value + " Round: " + round);
 		if(MsgType == 'N'){
 		    int[] msg = {round, value};
             node.addNValue(msg);
