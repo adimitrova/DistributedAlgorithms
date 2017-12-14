@@ -20,7 +20,7 @@ public class Main {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "145.94.153.224";
+        String ipLaurens = "192.168.0.109";
         String ipAni = "192.168.1.7";
         //int[] IDsLaurens = {7, 4, 9, 12, 1};
         //int[] IDsAni = {3, 8, 2, 6, 5};
@@ -58,6 +58,15 @@ public class Main {
             bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty);
             ID++;
         }
+
+        // Now let the general start with broadcasting
+        Byzantine general = byzantines.get(0);
+        try {
+//            TimeUnit.SECONDS.sleep(5);
+            general.broadcast('N', 1, 1);    // NEVER START AT ROUND 0
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,7 +82,6 @@ public class Main {
     private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f){
         try{
             System.setSecurityManager(new RMISecurityManager());
-            Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
             Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f);

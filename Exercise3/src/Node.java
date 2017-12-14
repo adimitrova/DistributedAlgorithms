@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
  * @version 22.11.2017
  */
-public class Node implements Serializable{
+public class Node {
 
 	private List<String> ipPorts; // IP Port combination of the location of its upstream component.
     private int nodeID;
@@ -44,7 +44,7 @@ public class Node implements Serializable{
         int v = roundAndValueIn[1];
         // check whether the amount of round already encountered is like expectation,
         // otherwise grow the size of its own Database of Proposals with the according amount of rounds.
-        int diff = proposalValues.size() - r;
+        int diff = r - proposalValues.size();
         if(diff > 0) {
             for (int i = 0; i < diff; i++) {
                 proposalValues.add(new ArrayList<Integer>());
@@ -62,7 +62,7 @@ public class Node implements Serializable{
         // documentation see addPValue
         int r = roundAndValueIn[0];
         int v = roundAndValueIn[1];
-        int diff = notificationValues.size() - r;
+        int diff = r - notificationValues.size();
         if(diff > 0) {
             for (int i = 0; i < diff; i++) {
                 notificationValues.add(new ArrayList<Integer>());
@@ -72,11 +72,11 @@ public class Node implements Serializable{
     }
     
     public List<Integer> getPvalues(int roundIn){
-    	return proposalValues.get(roundIn);
+    	return proposalValues.get(roundIn-1);
     }
     
     public List<Integer> getNvalues(int roundIn){
-        return notificationValues.get(roundIn);
+        return notificationValues.get(roundIn-1);
     }
 
     public void setOwnValue(int v) {
@@ -88,14 +88,14 @@ public class Node implements Serializable{
     }
 
     public int getAmountNotified(int round){
-        if(notificationValues.size() < round){
+        if(notificationValues.size() >= round){
             return notificationValues.get(round-1).size();
         }
         return 0;
     }
 
     public int getAmountProposed(int round){
-        if(proposalValues.size() < round){
+        if(proposalValues.size() >= round){
             return proposalValues.get(round-1).size();
         }
         return 0;
