@@ -18,8 +18,7 @@ public class Node implements Serializable{
     private List<ArrayList<Integer>> proposalValues;
     private List<ArrayList<Integer>> notificationValues;
     private List<ArrayList<Integer>> decidedPerRound;
-    private int ownValue;
-    private boolean decided;
+    private int ownValue = -1;
     
     /**
      * Constructor for the Node
@@ -51,7 +50,7 @@ public class Node implements Serializable{
             }
         }
         // Add the value of the proposal to its own list of proposals per round
-        proposalValues.get(r).add(v);
+        proposalValues.get(r-1).add(v);
     }
 
     /** 
@@ -68,7 +67,7 @@ public class Node implements Serializable{
                 notificationValues.add(new ArrayList<Integer>());
             }
         }
-        notificationValues.get(r).add(v);
+        notificationValues.get(r-1).add(v);
     }
     
     public List<Integer> getPvalues(int roundIn){
@@ -89,14 +88,14 @@ public class Node implements Serializable{
 
     public int getAmountNotified(int round){
         if(notificationValues.size() < round){
-            return notificationValues.get(round).size();
+            return notificationValues.get(round-1).size();
         }
         return 0;
     }
 
     public int getAmountProposed(int round){
         if(proposalValues.size() < round){
-            return proposalValues.get(round).size();
+            return proposalValues.get(round-1).size();
         }
         return 0;
     }

@@ -20,12 +20,15 @@ public class Main {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "145.94.152.192";
+        String ipLaurens = "145.94.153.224";
         String ipAni = "145.94.164.48";
         int[] IDsLaurens = {7, 4, 9, 12, 1};
-        int[] IDsAni = {3, 8, 2, 6, 5};
+//        int[] IDsAni = {3, 8, 2, 6, 5};
+        int[] IDsAni = {};
+
         int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-        int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
+//        int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
+        int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
         // Create the fully connected Network

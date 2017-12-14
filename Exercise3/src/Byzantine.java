@@ -9,7 +9,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	int round;	// round
 //	int nodesParticipating;
 	public static List<String> ipPortList; // global ip and port list of all processes
-    public int faultTolerance = 0;        // faulty processes we allow
+    public int faultTolerance = 0;         // faulty processes we allow
 	public boolean decided;
 	public int decidedValue;
 	public Node node;
@@ -72,6 +72,10 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                         }
                     } else if (countOne > faultTolerance) {
                         node.setOwnValue(1);
+                        if (countOne > 3 * faultTolerance) {
+                            decidedValue = 1;
+                            decided = true;
+                        }
                     } else {
                         // decide a random value between 0 and 1
                         Random random = new Random();
