@@ -21,14 +21,16 @@ public class Main {
 
         // initialization of unidirectional ring
         String ipLaurens = "145.94.153.224";
-        String ipAni = "145.94.167.195";
-        int[] IDsLaurens = {7, 4, 9, 12, 1};
-//        int[] IDsAni = {3, 8, 2, 6, 5};
-        int[] IDsAni = {};
+        String ipAni = "192.168.1.7";
+        //int[] IDsLaurens = {7, 4, 9, 12, 1};
+        //int[] IDsAni = {3, 8, 2, 6, 5};
+        //int[] IDsAni = ();
+        //int[] IDsLaurens = {};
 
-        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-//        int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
-        int[] portNumbersAni = {};
+        //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        //int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
+        //int[] portNumbersLaurens = {};
+        //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
         // Create the fully connected Network
