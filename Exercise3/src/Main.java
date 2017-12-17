@@ -90,7 +90,7 @@ public class Main {
             byzantines.add(byzantine);
             
             if(portNumber == 24){
-            	byzantine.setTraitor('O');
+            	byzantine.setTraitor('R');
             }
         }catch (Exception e) {
             System.out.println("Client Exception: " + e);

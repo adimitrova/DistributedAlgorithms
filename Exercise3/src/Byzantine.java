@@ -38,7 +38,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	public void setTraitor(char type){
 		traitor = true;
 		traitorType = type;
-		System.out.println("ID: " + this.id + "| Traitor: " + traitorType + " | Type: " + traitorType);
+		System.out.println("ID: " + this.id + "| Traitor: " + traitor + " | Type: " + traitorType);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -61,11 +61,12 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
         } else if (traitor) {
         	// send random value
         	if(traitorType == 'R'){
-        		int randomValue = (int) Math.round(Math.random());
+        		int randomValue = 0;
         		for (int i = 0; i< ipPortList.size(); i++ ){
 	                try{
 	                    // connect to a second Byzantine process and send to it the broadcast.
 	                    // that second process receives the message.
+	                	randomValue = (int) (Math.round(Math.random()));
 	                    System.setSecurityManager(new RMISecurityManager());
 	                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
 	                    otherByzantine.receive(MsgType, round, randomValue);
