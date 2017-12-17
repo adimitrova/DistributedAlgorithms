@@ -1,4 +1,4 @@
-# Component class 
+# Process class 
 
 The current process operates according to Peterson's election algorithm in a unidirectional ring. Every process receives its downstream neighbour's id and compares that with its own id. It sends the higher of the two values to its downstream neighbour 
 Condition for staying active: 
@@ -8,3 +8,6 @@ If the above are not met (**both of them**), the current process is set to PASSI
 If condition is false, the curr process gets killed for now until its elected at some point. 
 
 ## Peterson's algorithm is explained by the teacher in previous years [HERE](https://collegerama.tudelft.nl/Mediasite/Play/cb6da7ce5002457fb804557758e222a11d?catalog=528e5b24-a2fc-4def-870e-65bd84b28a8c) at time: 0:43:51 
+
+Plan:
+we leave the message class but send 

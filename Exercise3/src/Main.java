@@ -21,15 +21,15 @@ public class Main {
 
         // initialization of unidirectional ring
         String ipLaurens = "192.168.0.109";
-        String ipAni = "192.168.1.7";
+        String ipAni = "192.168.1.148";
         //int[] IDsLaurens = {7, 4, 9, 12, 1};
-        //int[] IDsAni = {3, 8, 2, 6, 5};
-        //int[] IDsAni = ();
-        //int[] IDsLaurens = {};
+        int[] IDsAni = {3, 8, 2, 6, 5};
+        //int[] IDsAni = {};
+        int[] IDsLaurens = {};
 
         //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-        //int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
-        //int[] portNumbersLaurens = {};
+        int[] portNumbersAni = {21, 26, 23, 24, 25};
+        int[] portNumbersLaurens = {};
         //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
@@ -45,17 +45,18 @@ public class Main {
         int ID = 0;
         // Create each byzantine node
         for(String nodeIp: ipPortList) {
-            List<String> tempIpPorts = new ArrayList<String>();
+        	
+        	nodeIp = nodeIp.substring(6);
+            String[] ipPort = nodeIp.split(":");
+            String ip = ipPort[0];
+            int port = Integer.parseInt(ipPort[1]);
+            List<String> tempIpPorts = new ArrayList<String>();            
+            
             for (String otherNodeIp : ipPortList) {
                 if (!otherNodeIp.equals(nodeIp)) {
                     tempIpPorts.add(otherNodeIp);
                 }
-            }
-            nodeIp = nodeIp.substring(6);
-            String[] ipPort = nodeIp.split(":");
-            String ip = ipPort[0];
-            int port = Integer.parseInt(ipPort[1]);
-            bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty);
+            }bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty);
             ID++;
         }
 
@@ -87,6 +88,10 @@ public class Main {
             Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f);
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine", byzantine);
             byzantines.add(byzantine);
+            
+            if(portNumber == 24){
+            	byzantine.setTraitor('O');
+            }
         }catch (Exception e) {
             System.out.println("Client Exception: " + e);
         }

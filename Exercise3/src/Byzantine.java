@@ -15,6 +15,8 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	public Node node;
 	public int amountNodes;
 	public int id;
+	private boolean traitor = false;
+	private char traitorType;
 
 	public Byzantine(int id, List<String> ipPorts, int n, int f) throws RemoteException{
         amountNodes = n;
@@ -24,41 +26,94 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
         round = 1;
         decided = false;
         this.id = id;
-        System.out.println("Starting Byzantine");
+        System.out.println("Starting Byzantine, ID: " + id);
     }
 
-	@Override
-	public void broadcast(char MsgType, int round, int value) throws RemoteException{
-		System.out.println("Broadcast: " + MsgType + " Value: " + value + " Round: " + round);
-        ByzantineInterface otherByzantine;
-        for (int i = 0; i< ipPortList.size(); i++ ){
-            try{
-                // connect to a second Byzantine process and send to it the broadcast.
-                // that second process receives the message.
-                System.setSecurityManager(new RMISecurityManager());
-                otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
-                otherByzantine.receive(MsgType, round, value);
-            }catch (Exception e) {
-                System.out.println("Broadcast Exception: " + e);
-            }
-        }
+	/**
+	 * Traitor has two types of behaviour, set via this method:
+	 * R = random value
+	 * O = opposite of received value
+	 * @param type
+	 */
+	public void setTraitor(char type){
+		traitor = true;
+		traitorType = type;
+		System.out.println("ID: " + this.id + "| Traitor: " + traitorType + " | Type: " + traitorType);
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public void broadcast(char MsgType, int round, int value) throws RemoteException{
+		ByzantineInterface otherByzantine;
+        if(!traitor){
+        	for (int i = 0; i< ipPortList.size(); i++ ){
+                try{
+                    // connect to a second Byzantine process and send to it the broadcast.
+                    // that second process receives the message.
+                    System.setSecurityManager(new RMISecurityManager());
+                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
+                    otherByzantine.receive(MsgType, round, value);
+                    System.out.println("---> BROADCAST: "  + MsgType + " Value: " + value + " Round: " + round + " ID: " + this.id);
+                }catch (Exception e) {
+                    System.out.println("Broadcast Exception: " + e);
+                }
+            }
+        } else if (traitor) {
+        	// send random value
+        	if(traitorType == 'R'){
+        		int randomValue = (int) Math.round(Math.random());
+        		for (int i = 0; i< ipPortList.size(); i++ ){
+	                try{
+	                    // connect to a second Byzantine process and send to it the broadcast.
+	                    // that second process receives the message.
+	                    System.setSecurityManager(new RMISecurityManager());
+	                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
+	                    otherByzantine.receive(MsgType, round, randomValue);
+	                    System.out.println("---> BROADCAST: " + MsgType + " Value: " + randomValue + " Round: " + round + " ID: " + this.id);
+	                }catch (Exception e) {
+	                    System.out.println("Broadcast Exception: " + e);
+	                }
+        		}	
+        	// send opposite value
+        	} else if(traitorType == 'O'){
+        		int oppositeValue = value;
+        		if (value == 0) {
+        			oppositeValue = 1;
+				} else if (value == 1){
+					oppositeValue = 0;
+				}
+        		
+        		for (int i = 0; i< ipPortList.size(); i++ ){
+	                try{
+	                    // connect to a second Byzantine process and send to it the broadcast.
+	                    // that second process receives the message.
+	                    System.setSecurityManager(new RMISecurityManager());
+	                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
+	                    otherByzantine.receive(MsgType, round, oppositeValue);
+	                    System.out.println("---> BROADCAST: " + MsgType + " Value: " + oppositeValue + " Round: " + round + " ID: " + this.id);
+	                }catch (Exception e) {
+	                    System.out.println("Broadcast Exception: " + e);
+	                }
+        		}
+        	}
+        }
+	}
+	
 	@Override
 	public void receive(char MsgType, int round, int value) throws RemoteException {
-        System.out.println("Received: " + MsgType + " Value: " + value + " Round: " + round);
+		System.out.println("<-- RECEIVED: " + MsgType + " Value: " + value + " Round: " + round + " ID: " + this.id);
 		if(MsgType == 'N'){
 		    // If the node receives a message for the first time, notify the others with that value
             if(node.getAmountNotified(round) == 0){
                 int[] msg = {round, value};
                 node.addNValue(msg);
-                System.out.println("Ready to broadcast!");
+                System.out.println("Ready to broadcast!\n");
                 broadcast('N', round, value);
             } else {
                 int[] msg = {round, value};
                 node.addNValue(msg);
             }
-            System.out.println("I have received: " + node.getAmountNotified(round) + " messages" );
+            System.out.println("I, byzantine " + id + " have received: " + node.getAmountNotified(round) + " messages" );
             if(node.getAmountNotified(round) > (amountNodes - faultTolerance)){
                 List<Integer> notifications = node.getNvalues(round);
                 int countZero = 0;
@@ -115,7 +170,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                     Random random = new Random();
                     node.setOwnValue(random.nextInt(1));
                 }
-                System.out.println("I, byzantine " + id + ", have decided: " + decidedValue);
+                System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
             }
         }
 	}
