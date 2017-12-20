@@ -85,7 +85,7 @@ public class Main {
                 if(countDecided == ipPortList.size()-amountFaulty){
                     System.out.println("All loyal processes have decided :)!");
                     for (Byzantine byzantine: byzantines) {
-                        System.out.println("Byzantine with ID = " + byzantine.getID() " has decided: " + byzantine.getValue());
+                        System.out.println("Byzantine with ID = " + byzantine.getID() + " has decided: " + byzantine.getValue());
                     }
                 }
             }
