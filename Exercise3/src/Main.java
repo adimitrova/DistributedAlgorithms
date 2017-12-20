@@ -3,6 +3,7 @@ import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,14 +22,14 @@ public class Main {
 
         // initialization of unidirectional ring
         String ipLaurens = "192.168.0.109";
-        String ipAni = "192.168.1.148";
+        String ipAni = "145.5.199.211";
         //int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
         //int[] IDsAni = {};
         int[] IDsLaurens = {};
 
         //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-        int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010 };
+        int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
         int[] portNumbersLaurens = {};
         //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
@@ -56,15 +57,24 @@ public class Main {
                 if (!otherNodeIp.equals(nodeIp)) {
                     tempIpPorts.add(otherNodeIp);
                 }
-            }bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty);
+            }
+            if(ID == 0 || ID == 2 || ID == 3) {
+                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+            } else{
+                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
+            }
             ID++;
+
         }
 
         // Now let the general start with broadcasting
         Byzantine general = byzantines.get(0);
+        byzantines.get(1).setTraitor('R');
+
         try {
 //            TimeUnit.SECONDS.sleep(5);
-            general.broadcast('N', 1, 1);    // NEVER START AT ROUND 0
+            general.broadcast('N', 1, 1);
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -104,12 +114,12 @@ public class Main {
      * @param f the amount of faulty byzantines in the fully connected network.
      * @return
      */
-    private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f){
+    private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f, int value){
         try{
             System.setSecurityManager(new RMISecurityManager());
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
-            Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f);
+            Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f, value);
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine", byzantine);
             byzantines.add(byzantine);
             

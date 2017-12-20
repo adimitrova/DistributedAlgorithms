@@ -19,6 +19,7 @@ public class Node {
     private List<ArrayList<Integer>> notificationValues;
     private List<ArrayList<Integer>> decidedPerRound;
     private int ownValue = 0;           // Initial value for all agents (could eventually be randomized)
+    private boolean traitor = false;
     
     /**
      * Constructor for the Node
@@ -99,5 +100,13 @@ public class Node {
             return proposalValues.get(round-1).size();
         }
         return 0;
+    }
+
+    public void setTraitor(boolean traitor){
+        this.traitor = traitor;
+    }
+
+    public boolean getTraitor(){
+        return traitor;
     }
 }
