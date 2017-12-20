@@ -23,12 +23,12 @@ public class Main {
         String ipLaurens = "192.168.0.109";
         String ipAni = "192.168.1.148";
         //int[] IDsLaurens = {7, 4, 9, 12, 1};
-        int[] IDsAni = {3, 8, 2, 6, 5};
+        int[] IDsAni = {3, 8, 2, 6, 5, 10};
         //int[] IDsAni = {};
         int[] IDsLaurens = {};
 
         //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-        int[] portNumbersAni = {21, 26, 23, 24, 25};
+        int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010 };
         int[] portNumbersLaurens = {};
         //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
@@ -68,6 +68,30 @@ public class Main {
         } catch (Exception e){
             e.printStackTrace();
         }
+
+        while (true) {
+            // now check whether agreement is reached
+            boolean[] decidedArray = new boolean[byzantines.size()];
+            for (int i = 0; i < byzantines.size(); i++) {
+                int countDecided = 0;
+                try {
+                    if (byzantines.get(i).hasDecided()) {
+                        decidedArray[i] = true;
+                        countDecided++;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                if(countDecided == ipPortList.size()-amountFaulty){
+                    System.out.println("All loyal processes have decided :)!");
+                    for (Byzantine byzantine: byzantines) {
+                        System.out.println("Byzantine with ID = " + byzantine.getID() " has decided: " + byzantine.getValue());
+                    }
+                }
+            }
+
+        }
+
     }
 
     /**

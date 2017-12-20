@@ -18,7 +18,7 @@ public class Node {
     private List<ArrayList<Integer>> proposalValues;
     private List<ArrayList<Integer>> notificationValues;
     private List<ArrayList<Integer>> decidedPerRound;
-    private int ownValue = -1;
+    private int ownValue = 0;           // Initial value for all agents (could eventually be randomized)
     
     /**
      * Constructor for the Node

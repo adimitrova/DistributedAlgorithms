@@ -109,7 +109,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 int[] msg = {round, value};
                 node.addNValue(msg);
                 System.out.println("Ready to broadcast!\n");
-                broadcast('N', round, value);
+                broadcast('N', round, node.getOwnValue());
             } else {
                 int[] msg = {round, value};
                 node.addNValue(msg);
@@ -136,42 +136,49 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 }
             }
 		}
-		if(MsgType == 'P'){
-            int[] msg = {round, value};
-            node.addPValue(msg);
-            if(node.getAmountProposed(round) > (amountNodes - faultTolerance)) {
-                List<Integer> proposals = node.getPvalues(round);
+		if(!decided) {
+            if (MsgType == 'P') {
+                int[] msg = {round, value};
+                node.addPValue(msg);
+                if (node.getAmountProposed(round) > (amountNodes - faultTolerance)) {
+                    List<Integer> proposals = node.getPvalues(round);
 
-                // Count the different values, if large than the half decide otherwise propose i don't know!
-                int countZero = 0;
-                int countOne = 0;
-                for (Integer elem : proposals) {
-                    if (elem == 1) {
-                        countOne++;
-                    } else if (elem == 0) {
-                        countZero++;
+                    // Count the different values, if large than the half decide otherwise propose i don't know!
+                    int countZero = 0;
+                    int countOne = 0;
+                    for (Integer elem : proposals) {
+                        if (elem == 1) {
+                            countOne++;
+                        } else if (elem == 0) {
+                            countZero++;
+                        }
                     }
-                }
 
-                //send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
-                if (countZero > faultTolerance) {
-                    node.setOwnValue(0);
-                    if (countZero > 3 * faultTolerance) {
-                        decidedValue = 0;
-                        decided = true;
+                    //send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
+                    if (countZero > faultTolerance) {
+                        node.setOwnValue(0);
+                        if (countZero > 3 * faultTolerance) {
+                            decidedValue = 0;
+                            if (!traitor){
+                                decided = true;
+                            }
+                        }
+                    } else if (countOne > faultTolerance) {
+                        node.setOwnValue(1);
+                        if (countOne > 3 * faultTolerance) {
+                            decidedValue = 1;
+                            if (!traitor){
+                                decided = true;
+                            }
+                        }
+                    } else {
+                        // decide a random value between 0 and 1
+                        Random random = new Random();
+                        node.setOwnValue(random.nextInt(1));
                     }
-                } else if (countOne > faultTolerance) {
-                    node.setOwnValue(1);
-                    if (countOne > 3 * faultTolerance) {
-                        decidedValue = 1;
-                        decided = true;
-                    }
-                } else {
-                    // decide a random value between 0 and 1
-                    Random random = new Random();
-                    node.setOwnValue(random.nextInt(1));
+                    round++;
+                    System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
                 }
-                System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
             }
         }
 	}
@@ -180,4 +187,12 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	public boolean hasDecided() throws RemoteException{
         return decided;
 	}
+
+	public int getValue(){
+	    return node.getOwnValue();
+    }
+
+    public int getID(){
+        return id;
+    }
 }
