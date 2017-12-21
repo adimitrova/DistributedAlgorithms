@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
  * @version 22.11.2017
  */
-public class Main {
+public class MainOtherPC {
     public static List<String> ipPortList; // global ip and port list of all processes
     public static List<Byzantine> byzantines;
 
@@ -21,17 +21,13 @@ public class Main {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "192.168.0.109";
-        String ipAni = "145.5.199.211";
-        //int[] IDsLaurens = {7, 4, 9, 12, 1};
+        String ipLaurens = "145.94.5.48";
+        String ipAni = "145.94.5.223";
+        int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
-        //int[] IDsAni = {};
-        int[] IDsLaurens = {};
 
-        //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
         int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        int[] portNumbersLaurens = {};
-        //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
         // Create the fully connected Network
@@ -58,49 +54,38 @@ public class Main {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
-            if(ID == 0 || ID == 2 ) {
-                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
-            } else{
-                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
-            }
-            ID++;
-        }
-
-        // Now let the general start with broadcasting
-        Byzantine general = byzantines.get(0);
-        byzantines.get(1).setTraitor('O');
-
-        try {
-//            TimeUnit.SECONDS.sleep(5);
-            general.broadcast('N', 1, 1);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        while (true) {
-            // now check whether agreement is reached
-            boolean[] decidedArray = new boolean[byzantines.size()];
-            for (int i = 0; i < byzantines.size(); i++) {
-                int countDecided = 0;
-                try {
-                    if (byzantines.get(i).hasDecided()) {
-                        decidedArray[i] = true;
-                        countDecided++;
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
+            if(ip.equals(ipLaurens)) {
+                if (ID == 0 || ID == 2) {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+                } else {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
                 }
-                if(countDecided == ipPortList.size()-amountFaulty){
-                    System.out.println("All loyal processes have decided :)!");
-                    for (Byzantine byzantine: byzantines) {
-                        System.out.println("Byzantine with ID = " + byzantine.getID() + " has decided: " + byzantine.getValue());
-                    }
-                }
+                ID++;
             }
-
         }
 
+//        while(true){
+//            try {
+//                TimeUnit.SECONDS.sleep(3);
+//                System.out.println("joepie");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+
+//
+//        // Now let the general start with broadcasting
+//        Byzantine general = byzantines.get(0);
+//        byzantines.get(1).setTraitor('O');
+//
+//        try {
+////            TimeUnit.SECONDS.sleep(5);
+//            general.broadcast('N', 1, 1);
+//
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     /**
