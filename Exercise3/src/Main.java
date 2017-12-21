@@ -58,18 +58,17 @@ public class Main {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
-            if(ID == 0 || ID == 2 || ID == 3) {
+            if(ID == 0 || ID == 2 ) {
                 bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
             } else{
                 bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
             }
             ID++;
-
         }
 
         // Now let the general start with broadcasting
         Byzantine general = byzantines.get(0);
-        byzantines.get(1).setTraitor('R');
+        byzantines.get(1).setTraitor('O');
 
         try {
 //            TimeUnit.SECONDS.sleep(5);

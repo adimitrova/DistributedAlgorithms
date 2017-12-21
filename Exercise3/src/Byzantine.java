@@ -43,7 +43,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	 */
 	public void setTraitor(char type){
 	    traitor = true;
-		node.setTraitor(true);
 		traitorType = type;
 		System.out.println("ID: " + this.id + "| Traitor: " + traitor + " | Type: " + traitorType);
 	}
@@ -60,7 +59,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                     System.setSecurityManager(new RMISecurityManager());
                     otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
                     otherByzantine.receive(MsgType, round, value);
-//                    System.out.println("---> BROADCAST: "  + MsgType + " Value: " + value + " Round: " + round + " ID: " + this.id);
                 }catch (Exception e) {
                     System.out.println("Broadcast Exception: " + e);
                 }
@@ -77,8 +75,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	                    System.setSecurityManager(new RMISecurityManager());
 	                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
 	                    otherByzantine.receive(MsgType, round, randomValue);
-                        System.out.println("Traitors value: " + randomValue);
-//	                    System.out.println("---> BROADCAST: " + MsgType + " Value: " + randomValue + " Round: " + round + " ID: " + this.id);
 	                }catch (Exception e) {
 	                    System.out.println("Broadcast Exception: " + e);
 	                }
@@ -99,7 +95,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	                    System.setSecurityManager(new RMISecurityManager());
 	                    otherByzantine = (ByzantineInterface) Naming.lookup(ipPortList.get(i) +"/byzantine");
 	                    otherByzantine.receive(MsgType, round, oppositeValue);
-//	                    System.out.println("---> BROADCAST: " + MsgType + " Value: " + oppositeValue + " Round: " + round + " ID: " + this.id);
 	                }catch (Exception e) {
 	                    System.out.println("Broadcast Exception: " + e);
 	                }
@@ -112,16 +107,18 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	public void receive(char MsgType, int round, int value) throws RemoteException {
 //		System.out.println("<-- RECEIVED: " + MsgType + " Value: " + value + " Round: " + round + " ID: " + this.id);
 		if(MsgType == 'N'){
+
 		    // If the node receives a message for the first time, notify the others with that value
-            if(node.getAmountNotified(round) == 0){
+            // only in the first round the broadcast should be done otherwise is done at the end of this method.
+            if(node.getAmountNotified(round) == 0 && round ==1){
                 int[] msg = {round, value};
                 node.addNValue(msg);
-//                System.out.println("Ready to broadcast!\n");
                 broadcast('N', round, node.getOwnValue());
-            } else {
-                int[] msg = {round, value};
-                node.addNValue(msg);
             }
+            int[] msg = {round, value};
+            node.addNValue(msg);
+
+
 //            System.out.println("I, byzantine " + id + " have received: " + node.getAmountNotified(round) + " messages in round: " + round  );
             if(enteredNotification.size() < round){
                 enteredNotification.add(false);
@@ -139,18 +136,15 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                     }
                 }
                 // send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
-                if (id == 0){
-                    System.out.println("Proposal countzero " + countZero + " Round: " + round);
-                    System.out.println("Proposal countOne " + countOne + " Round: " + round);
-                }
+//                if (id == 0){
+//                    System.out.println("Proposal countzero " + countZero + " Round: " + round);
+//                    System.out.println("Proposal countOne " + countOne + " Round: " + round);
+//                }
                 if((countZero > (amountNodes + faultTolerance)/2)){
-                    System.out.println("Should not do!");
                     broadcast('P', round, 0);
                 } else if((countOne > (amountNodes + faultTolerance)/2)){
-                    System.out.println("Should do!");
                     broadcast('P', round, 1);
                 } else {
-//                    System.out.println(id + " i propose: " + -1);
                     broadcast('P', round, -1);
                 }
             }
@@ -164,10 +158,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 if (node.getAmountProposed(round) > (amountNodes - faultTolerance) && !enteredProposal.get(round-1)) {
                     enteredNotification.set(round-1,true);
                     List<Integer> proposals = node.getPvalues(round);
-                    if(id == 0){
-                        System.out.println(proposals.toString());
-                    }
-
 
                     // Count the different values, if large than the half decide otherwise propose i don't know!
                     int countZero = 0;
@@ -197,30 +187,9 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                         System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
                     } else {
                         Random random = new Random();
-                        int xo = random.nextInt(2);
-                        System.out.println(xo);
-                        node.setOwnValue(xo);
+                        int rValue = random.nextInt(2);
+                        node.setOwnValue(rValue);
                     }
-
-//                    if (countZero > faultTolerance) {
-//                        node.setOwnValue(0);
-//                        if (countZero > 3 * faultTolerance) {
-//                            decidedValue = 0;
-//                                decided = true;
-//                                System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
-//                        }
-//                    } else if (countOne > faultTolerance) {
-//                        node.setOwnValue(1);
-//                        if (countOne > 3 * faultTolerance) {
-//                            decidedValue = 1;
-//                                decided = true;
-//                                System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
-//                        }
-//                    } else {
-//                        // decide a random value between 0 and 1
-//                        Random random = new Random();
-//                        node.setOwnValue(random.nextInt(1));
-//                    }
                     round++;
                     broadcast('N', round, node.getOwnValue());
                 }
@@ -242,7 +211,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
     }
 
     public boolean isTraitor(){
-        return node.getTraitor();
+        return traitor;
     }
 
 }
