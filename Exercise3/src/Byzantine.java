@@ -3,10 +3,8 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Byzantine extends UnicastRemoteObject implements ByzantineInterface{
 	int round;	// round
@@ -107,7 +105,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	public void receive(char MsgType, int round, int value) throws RemoteException {
 //		System.out.println("<-- RECEIVED: " + MsgType + " Value: " + value + " Round: " + round + " ID: " + this.id);
 		if(MsgType == 'N'){
-
 		    // If the node receives a message for the first time, notify the others with that value
             // only in the first round the broadcast should be done otherwise is done at the end of this method.
             if(node.getAmountNotified(round) == 0 && round ==1){
@@ -118,8 +115,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
             int[] msg = {round, value};
             node.addNValue(msg);
 
-
-//            System.out.println("I, byzantine " + id + " have received: " + node.getAmountNotified(round) + " messages in round: " + round  );
             if(enteredNotification.size() < round){
                 enteredNotification.add(false);
             }
@@ -135,11 +130,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                         countZero++;
                     }
                 }
-                // send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
-//                if (id == 0){
-//                    System.out.println("Proposal countzero " + countZero + " Round: " + round);
-//                    System.out.println("Proposal countOne " + countOne + " Round: " + round);
-//                }
                 if((countZero > (amountNodes + faultTolerance)/2)){
                     broadcast('P', round, 0);
                 } else if((countOne > (amountNodes + faultTolerance)/2)){
@@ -155,7 +145,7 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 if(enteredProposal.size() < round){
                     enteredProposal.add(false);
                 }
-                if (node.getAmountProposed(round) > (amountNodes - faultTolerance) && !enteredProposal.get(round-1)) {
+                if (node.getAmountProposed(round) == (amountNodes - faultTolerance) && !enteredProposal.get(round-1)) {
                     enteredNotification.set(round-1,true);
                     List<Integer> proposals = node.getPvalues(round);
 
@@ -171,10 +161,6 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                     }
 
                     //send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
-                    if (id == 0){
-                        System.out.println("countzero " + countZero);
-                        System.out.println("countOne " + countOne);
-                    }
                     if (countZero > 3 * faultTolerance) {
                         decidedValue = 0;
                         decided = true;

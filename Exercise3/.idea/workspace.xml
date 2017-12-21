@@ -32,12 +32,12 @@
       <file leaf-file-name="Byzantine.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Byzantine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="189" column="29" lean-forward="false" selection-start-line="189" selection-start-column="29" selection-end-line="189" selection-end-column="29" />
+            <state relative-caret-position="346">
+              <caret line="162" column="21" lean-forward="true" selection-start-line="162" selection-start-column="21" selection-end-line="162" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#793#802#0" expanded="true" />
-                <element signature="e#863#872#0" expanded="true" />
+                <element signature="e#730#739#0" expanded="true" />
+                <element signature="e#800#809#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -46,8 +46,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="60" column="37" lean-forward="true" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
+            <state relative-caret-position="588">
+              <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -101,8 +101,8 @@
         <option value="$PROJECT_DIR$/security.policy" />
         <option value="$PROJECT_DIR$/src/src/Byzantine.java" />
         <option value="$PROJECT_DIR$/src/Node.java" />
-        <option value="$PROJECT_DIR$/src/Byzantine.java" />
         <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/Byzantine.java" />
       </list>
     </option>
   </component>
@@ -159,24 +159,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Exercise3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Exercise3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Byzantine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ClassTreeNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -640,15 +622,15 @@
       <workItem from="1513261592937" duration="4059000" />
       <workItem from="1513760509615" duration="8380000" />
       <workItem from="1513777091762" duration="1003000" />
-      <workItem from="1513852923530" duration="1724000" />
+      <workItem from="1513852923530" duration="4047000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31329000" />
+    <option name="totallyTimeSpent" value="33652000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="1936" height="1038" extended-state="1" />
+    <frame x="-8" y="0" width="1936" height="1038" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -735,8 +717,8 @@
           <caret line="58" column="64" lean-forward="false" selection-start-line="58" selection-start-column="64" selection-end-line="58" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -774,8 +756,8 @@
           <caret line="58" column="64" lean-forward="true" selection-start-line="58" selection-start-column="64" selection-end-line="58" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -797,8 +779,8 @@
           <caret line="62" column="28" lean-forward="false" selection-start-line="62" selection-start-column="28" selection-end-line="62" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -852,8 +834,8 @@
           <caret line="21" column="29" lean-forward="true" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -875,8 +857,8 @@
           <caret line="28" column="36" lean-forward="false" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -919,8 +901,8 @@
           <caret line="27" column="39" lean-forward="false" selection-start-line="27" selection-start-column="39" selection-end-line="27" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -974,8 +956,8 @@
           <caret line="90" column="0" lean-forward="false" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1014,22 +996,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ByzantineInterface.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="14" column="55" lean-forward="false" selection-start-line="14" selection-start-column="55" selection-end-line="14" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="60" column="37" lean-forward="true" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Node.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
@@ -1041,14 +1007,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="588">
+          <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ByzantineInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="14" column="55" lean-forward="false" selection-start-line="14" selection-start-column="55" selection-end-line="14" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Byzantine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="189" column="29" lean-forward="false" selection-start-line="189" selection-start-column="29" selection-end-line="189" selection-end-column="29" />
+        <state relative-caret-position="346">
+          <caret line="162" column="21" lean-forward="true" selection-start-line="162" selection-start-column="21" selection-end-line="162" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#793#802#0" expanded="true" />
-            <element signature="e#863#872#0" expanded="true" />
+            <element signature="e#730#739#0" expanded="true" />
+            <element signature="e#800#809#0" expanded="true" />
           </folding>
         </state>
       </provider>
