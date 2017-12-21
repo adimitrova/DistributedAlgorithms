@@ -24,11 +24,11 @@ public class Main {
         components = new ArrayList<Component>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "145.94.152.192";
-        String ipAni = "145.94.164.48";
+        String ipLaurens = "192.168.0.109";
+        String ipAni = "192.168.0.104";
         int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5};
-        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2010};
         int[] portNumbersAni = {2003, 2008, 2002, 2006, 2005};
 
         for (int i = 0; i< IDsLaurens.length; i++){
@@ -41,7 +41,7 @@ public class Main {
 
         // start the election in the unidirectional ring by sending an empty message a random node.
         try {
-            TimeUnit.SECONDS.sleep(10);
+//            TimeUnit.SECONDS.sleep(2);
 
             components.get(0).receive(0, 0);
 

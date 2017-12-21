@@ -10,7 +10,7 @@ import java.util.List;
  * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
  * @version 22.11.2017
  */
-public class MainOtherPC {
+public class MainShowcase {
     public static List<String> ipPortList; // global ip and port list of all processes
     public static List<Byzantine> byzantines;
 
@@ -19,16 +19,14 @@ public class MainOtherPC {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "192.168.0.104";
-        String ipAni = "192.168.0.109";
-//        int[] IDsLaurens = {7, 4, 9, 12, 1};
-        int[] IDsLaurens = {};
+        String ipAni = "192.168.0.104";
+        String ipLaurens = "192.168.0.109";
+        int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
 
-//        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
-        int[] portNumbersLaurens = {};
+        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
         int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        int amountFaulty = 1 ;
+        int amountFaulty = 3 ;
 
         // Create the fully connected Network
         for (int i = 0; i< IDsLaurens.length; i++) {
@@ -38,9 +36,7 @@ public class MainOtherPC {
         for (int i = 0; i< IDsAni.length; i++) {
             ipPortList.add("rmi://" + ipAni + ":" + Integer.toString(portNumbersAni[i]));
         }
-//        int testcase = 2;
-//        int testcase = 3;
-        int testcase = 5;
+
         int ID = 0;
         // Create each byzantine node
         for(String nodeIp: ipPortList) {
@@ -56,58 +52,38 @@ public class MainOtherPC {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
-            // testcase 2, 4 zeroes and 1 one.
-            if(testcase == 2) {
-                if (ip.equals(ipAni)) {
-                    if (ID == 0) {
-                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
-                    } else {
-                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
-                    }
-                    ID++;
+            if(ip.equals(ipLaurens)) {
+                if (ID == 0 || ID == 2) {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+                } else {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
                 }
-            } else if (testcase == 3){
-                if (ip.equals(ipAni)) {
-                    if (ID == 0 || ID == 1) {
-                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
-                    } else {
-                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
-                    }
-                    ID++;
-                }
-            } else if (testcase == 5){
-                int upperbound = 10;
-                for (int i = 0; i < upperbound; i++) {
-                    int tempport = 1000;
-                    tempport = tempport + i;
-                    if (ID == 0 || ID == 1 || ID == 50 || ID == 100) {
-                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 1);
-                    } else {
-                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 0);
-                    }
-                    ID++;
-                }
+                ID++;
             }
         }
 
+//        while(true){
+//            try {
+//                TimeUnit.SECONDS.sleep(3);
+//                System.out.println("joepie");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-        // testcase 2 (n = 6, f = 1 (nothing) )
-        if(testcase == 2){
-            byzantines.get(1).setTraitor('N'); // set the traitor to send Nothing
-            try {
-                byzantines.get(0).broadcast('N', 1, 1);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        } else if (testcase == 3 || testcase == 5){
-            byzantines.get(3).setTraitor('R'); // set the traitor to send Random values
-            try {
-                byzantines.get(0).broadcast('N', 1, 1);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+
+//
+        // Now let the general start with broadcasting
+        Byzantine general = byzantines.get(0);
+        byzantines.get(1).setTraitor('O');
+
+        try {
+//            TimeUnit.SECONDS.sleep(5);
+            general.broadcast('N', 1, 1);
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
     }
 
     /**
