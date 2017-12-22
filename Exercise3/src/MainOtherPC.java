@@ -3,8 +3,6 @@ import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Class which creates an unidirectional connection with several components with the help of RMI.
@@ -12,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author Anelia Dimitrova (4501667) & Laurens Weijs (4503813)
  * @version 22.11.2017
  */
-public class Main {
+public class MainOtherPC {
     public static List<String> ipPortList; // global ip and port list of all processes
     public static List<Byzantine> byzantines;
 
@@ -21,17 +19,15 @@ public class Main {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "145.94.5.48";
-        String ipAni = "145.94.5.223";
-        int[] IDsLaurens = {7, 4, 9, 12, 1};
+        String ipLaurens = "192.168.0.104";
+        String ipAni = "192.168.0.109";
+//        int[] IDsLaurens = {7, 4, 9, 12, 1};
+        int[] IDsLaurens = {};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
-        //int[] IDsAni = {};
-        //int[] IDsLaurens = {};
 
-        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+//        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int[] portNumbersLaurens = {};
         int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        //int[] portNumbersLaurens = {};
-        //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
         // Create the fully connected Network
@@ -42,7 +38,9 @@ public class Main {
         for (int i = 0; i< IDsAni.length; i++) {
             ipPortList.add("rmi://" + ipAni + ":" + Integer.toString(portNumbersAni[i]));
         }
-
+//        int testcase = 2;
+//        int testcase = 3;
+        int testcase = 5;
         int ID = 0;
         // Create each byzantine node
         for(String nodeIp: ipPortList) {
@@ -58,46 +56,57 @@ public class Main {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
-            if(ip.equals(ipAni)) {
-	            if(ID == 0 || ID == 2 ) {
-	                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
-	            } else{
-	                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
-	            }
-	            ID++;
+            // testcase 2, 4 zeroes and 1 one.
+            if(testcase == 2) {
+                if (ip.equals(ipAni)) {
+                    if (ID == 0) {
+                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+                    } else {
+                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
+                    }
+                    ID++;
+                }
+            } else if (testcase == 3){
+                if (ip.equals(ipAni)) {
+                    if (ID == 0 || ID == 1) {
+                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+                    } else {
+                        bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
+                    }
+                    ID++;
+                }
+            } else if (testcase == 5){
+                int upperbound = 10;
+                for (int i = 0; i < upperbound; i++) {
+                    int tempport = 1000;
+                    tempport = tempport + i;
+                    if (ID == 0 || ID == 1 || ID == 50 || ID == 100) {
+                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 1);
+                    } else {
+                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 0);
+                    }
+                    ID++;
+                }
             }
         }
 
-        // Now let the general start with broadcasting
-        Byzantine general = byzantines.get(0);
-        byzantines.get(1).setTraitor('O');
 
-        try {
-        	TimeUnit.SECONDS.sleep(3);
-            general.broadcast('N', 1, 1);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-            // now check whether agreement is reached
-            boolean[] decidedArray = new boolean[byzantines.size()];
-            for (int i = 0; i < byzantines.size(); i++) {
-                int countDecided = 0;
-                try {
-                    if (byzantines.get(i).hasDecided()) {
-                        decidedArray[i] = true;
-                        countDecided++;
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                if(countDecided == ipPortList.size()-amountFaulty){
-                    System.out.println("All loyal processes have decided :)!");
-                    for (Byzantine byzantine: byzantines) {
-                        System.out.println("Byzantine with ID = " + byzantine.getID() + " has decided: " + byzantine.getValue());
-                    }
-                }
+        // testcase 2 (n = 6, f = 1 (nothing) )
+        if(testcase == 2){
+            byzantines.get(1).setTraitor('N'); // set the traitor to send Nothing
+            try {
+                byzantines.get(0).broadcast('N', 1, 1);
+            } catch (Exception e){
+                e.printStackTrace();
             }
+        } else if (testcase == 3 || testcase == 5){
+            byzantines.get(3).setTraitor('R'); // set the traitor to send Random values
+            try {
+                byzantines.get(0).broadcast('N', 1, 1);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -114,15 +123,12 @@ public class Main {
     private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f, int value){
         try{
             System.setSecurityManager(new RMISecurityManager());
+            Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
             Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f, value);
             Naming.rebind("rmi://" + ip + ":" +Integer.toString(portNumber) +"/byzantine", byzantine);
             byzantines.add(byzantine);
-            
-            if(portNumber == 24){
-            	byzantine.setTraitor('R');
-            }
         }catch (Exception e) {
             System.out.println("Client Exception: " + e);
         }

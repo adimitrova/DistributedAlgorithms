@@ -83,6 +83,7 @@ public class Component extends UnicastRemoteObject implements ComponentInterface
 
         try {
             System.setSecurityManager(new RMISecurityManager());
+			System.out.println(ipPortUpstreamComp +"/component");
 			ComponentInterface otherComponent = (ComponentInterface) Naming.lookup( ipPortUpstreamComp +"/component");
 
 			// needed for the initialization of the election, at the beginning the nodes do not have enough information.

@@ -5,6 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Byzantine extends UnicastRemoteObject implements ByzantineInterface{
 	int round;	// round
@@ -48,7 +49,15 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
 	@SuppressWarnings("deprecation")
 	@Override
 	public void broadcast(char MsgType, int round, int value) throws RemoteException{
-		ByzantineInterface otherByzantine;
+//        // for testcase 4 (Asynchronous)
+//        Random randomwait = new Random();
+//        try {
+//            TimeUnit.SECONDS.sleep(randomwait.nextInt(2));
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        ByzantineInterface otherByzantine;
         if(!traitor){
         	for (int i = 0; i< ipPortList.size(); i++ ){
                 try{
@@ -139,46 +148,55 @@ public class Byzantine extends UnicastRemoteObject implements ByzantineInterface
                 }
             }
 		} else if (MsgType == 'P') {
-            if(!decided) {
+
                 int[] msg = {round, value};
                 node.addPValue(msg);
                 if(enteredProposal.size() < round){
                     enteredProposal.add(false);
                 }
                 if (node.getAmountProposed(round) == (amountNodes - faultTolerance) && !enteredProposal.get(round-1)) {
-                    enteredNotification.set(round-1,true);
-                    List<Integer> proposals = node.getPvalues(round);
+                    if(!decided) {
+                        enteredNotification.set(round - 1, true);
+                        List<Integer> proposals = node.getPvalues(round);
 
-                    // Count the different values, if large than the half decide otherwise propose i don't know!
-                    int countZero = 0;
-                    int countOne = 0;
-                    for (Integer elem : proposals) {
-                        if (elem == 1) {
-                            countOne++;
-                        } else if (elem == 0) {
-                            countZero++;
+                        // Count the different values, if large than the half decide otherwise propose i don't know!
+                        int countZero = 0;
+                        int countOne = 0;
+                        for (Integer elem : proposals) {
+                            if (elem == 1) {
+                                countOne++;
+                            } else if (elem == 0) {
+                                countZero++;
+                            }
                         }
-                    }
 
-                    //send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
-                    if (countZero > 3 * faultTolerance) {
-                        decidedValue = 0;
-                        decided = true;
-                        node.setOwnValue(decidedValue);
-                        System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
-                    } else if (countOne > 3 * faultTolerance) {
-                        decidedValue = 1;
-                        decided = true;
-                        node.setOwnValue(decidedValue);
-                        System.out.println("<< DECIDED >> byzantine " + id + ", value: " + decidedValue);
-                    } else {
-                        Random random = new Random();
-                        int rValue = random.nextInt(2);
-                        node.setOwnValue(rValue);
+                        //send out proposal with either 0 (decide 0), 1(decide 1) or -1 (i don't know).
+                        if (countZero > 3 * faultTolerance) {
+                            decidedValue = 0;
+                            decided = true;
+                            node.setOwnValue(decidedValue);
+                            String extraString = "";
+                            if (traitor) {
+                                extraString = " (traitor) ";
+                            }
+                            System.out.println("<< DECIDED >> byzantine " + extraString + id + ", value: " + decidedValue + " After round: " + round);
+                        } else if (countOne > 3 * faultTolerance) {
+                            decidedValue = 1;
+                            decided = true;
+                            node.setOwnValue(decidedValue);
+                            String extraString = "";
+                            if (traitor) {
+                                extraString = " (traitor) ";
+                            }
+                            System.out.println("<< DECIDED >> byzantine " + extraString + id + ", value: " + decidedValue + " After round: " + round);
+                        } else {
+                            Random random = new Random();
+                            int rValue = random.nextInt(2);
+                            node.setOwnValue(rValue);
+                        }
                     }
                     round++;
                     broadcast('N', round, node.getOwnValue());
-                }
             }
         }
 	}
