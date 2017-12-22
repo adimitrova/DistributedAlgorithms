@@ -21,16 +21,16 @@ public class Main {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "192.168.0.109";
-        String ipAni = "145.5.199.211";
-        //int[] IDsLaurens = {7, 4, 9, 12, 1};
+        String ipLaurens = "145.94.5.48";
+        String ipAni = "145.94.5.223";
+        int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
         //int[] IDsAni = {};
-        int[] IDsLaurens = {};
+        //int[] IDsLaurens = {};
 
-        //int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
         int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        int[] portNumbersLaurens = {};
+        //int[] portNumbersLaurens = {};
         //int[] portNumbersAni = {};
         int amountFaulty = 1 ;
 
@@ -58,12 +58,14 @@ public class Main {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
-            if(ID == 0 || ID == 2 ) {
-                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
-            } else{
-                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
+            if(ip.equals(ipAni)) {
+	            if(ID == 0 || ID == 2 ) {
+	                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+	            } else{
+	                bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
+	            }
+	            ID++;
             }
-            ID++;
         }
 
         // Now let the general start with broadcasting
@@ -71,14 +73,12 @@ public class Main {
         byzantines.get(1).setTraitor('O');
 
         try {
-//            TimeUnit.SECONDS.sleep(5);
+        	TimeUnit.SECONDS.sleep(3);
             general.broadcast('N', 1, 1);
 
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        while (true) {
             // now check whether agreement is reached
             boolean[] decidedArray = new boolean[byzantines.size()];
             for (int i = 0; i < byzantines.size(); i++) {
@@ -98,8 +98,6 @@ public class Main {
                     }
                 }
             }
-
-        }
 
     }
 
