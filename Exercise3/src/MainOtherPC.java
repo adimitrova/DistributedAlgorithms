@@ -19,16 +19,32 @@ public class MainOtherPC {
         byzantines = new ArrayList<Byzantine>();
 
         // initialization of unidirectional ring
-        String ipLaurens = "192.168.0.104";
-        String ipAni = "192.168.0.109";
+        String ipLaurens = "localhost";
+        String ipAni = "localhost";
 //        int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsLaurens = {};
-        int[] IDsAni = {3, 8, 2, 6, 5, 10};
+//        int[] IDsAni = {3, 8, 2, 6, 5, 10};
 
 //        int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
+        int upperbound = 2000;
         int[] portNumbersLaurens = {};
-        int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        int amountFaulty = 1 ;
+        int[] portNumbersAni = new int[upperbound];
+        int[] IDsAni = new int[upperbound];
+        for (int i = 0; i < upperbound; i++) {
+            int tempport = 2000;
+            if(i > 40 && i < 100){
+                portNumbersAni[i] = 1500 + i;
+                IDsAni[i] = i;
+            } else if(i < 40){
+                portNumbersAni[i] = tempport + i;
+                IDsAni[i] = i;
+            } else if(i > 100){
+                portNumbersAni[i] = 2501 + i;
+                IDsAni[i] = i;
+            }
+        }
+
+        int amountFaulty = 14 ;
 
         // Create the fully connected Network
         for (int i = 0; i< IDsLaurens.length; i++) {
@@ -38,9 +54,9 @@ public class MainOtherPC {
         for (int i = 0; i< IDsAni.length; i++) {
             ipPortList.add("rmi://" + ipAni + ":" + Integer.toString(portNumbersAni[i]));
         }
-//        int testcase = 2;
-//        int testcase = 3;
         int testcase = 5;
+//        int testcase = 3;
+//        int testcase = ;
         int ID = 0;
         // Create each byzantine node
         for(String nodeIp: ipPortList) {
@@ -49,9 +65,10 @@ public class MainOtherPC {
             String[] ipPort = nodeIp.split(":");
             String ip = ipPort[0];
             int port = Integer.parseInt(ipPort[1]);
-            List<String> tempIpPorts = new ArrayList<String>();            
+            List<String> tempIpPorts = new ArrayList<String>();
             
             for (String otherNodeIp : ipPortList) {
+//                System.out.println(otherNodeIp);
                 if (!otherNodeIp.equals(nodeIp)) {
                     tempIpPorts.add(otherNodeIp);
                 }
@@ -59,7 +76,9 @@ public class MainOtherPC {
             // testcase 2, 4 zeroes and 1 one.
             if(testcase == 2) {
                 if (ip.equals(ipAni)) {
-                    if (ID == 0) {
+                    if (ID == 9) {
+                        System.out.println(port);
+//                        System.out.println(tempIpPorts);
                         bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
                     } else {
                         bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
@@ -68,7 +87,7 @@ public class MainOtherPC {
                 }
             } else if (testcase == 3){
                 if (ip.equals(ipAni)) {
-                    if (ID == 0 || ID == 1) {
+                    if (ID == 10) {
                         bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
                     } else {
                         bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
@@ -76,18 +95,14 @@ public class MainOtherPC {
                     ID++;
                 }
             } else if (testcase == 5){
-                int upperbound = 10;
-                for (int i = 0; i < upperbound; i++) {
-                    int tempport = 1000;
-                    tempport = tempport + i;
-                    if (ID == 0 || ID == 1 || ID == 50 || ID == 100) {
-                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 1);
-                    } else {
-                        bindRMIComponent(tempport, ip, tempIpPorts, ID, upperbound, amountFaulty, 0);
-                    }
-                    ID++;
+                if (ID < 20) {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
+                } else {
+                    bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 0);
                 }
+                ID++;
             }
+
         }
 
 
@@ -100,9 +115,11 @@ public class MainOtherPC {
                 e.printStackTrace();
             }
         } else if (testcase == 3 || testcase == 5){
-            byzantines.get(3).setTraitor('R'); // set the traitor to send Random values
+            for (int i = 0; i < 14 ; i++) {
+                byzantines.get(i).setTraitor('N'); // set the traitor to send Random values
+            }
             try {
-                byzantines.get(0).broadcast('N', 1, 1);
+                byzantines.get(20).broadcast('N', 1, 1);
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -123,7 +140,7 @@ public class MainOtherPC {
     private static void bindRMIComponent(int portNumber, String ip, List<String> nextIpPorts, int ID, int n, int f, int value){
         try{
             System.setSecurityManager(new RMISecurityManager());
-            Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
+//            Runtime.getRuntime().exec("rmiregistry " + Integer.toString(portNumber));
             LocateRegistry.createRegistry(portNumber);
             String ipPort = "rmi://" + ip + ":" + Integer.toString(portNumber);
             Byzantine byzantine = new Byzantine(ID, nextIpPorts, n, f, value);

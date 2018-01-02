@@ -20,7 +20,7 @@ public class MainShowcase {
 
         // initialization of unidirectional ring
         String ipAni = "192.168.0.104";
-        String ipLaurens = "192.168.0.109";
+        String ipLaurens = "192.168.0.1";
         int[] IDsLaurens = {7, 4, 9, 12, 1};
         int[] IDsAni = {3, 8, 2, 6, 5, 10};
 
