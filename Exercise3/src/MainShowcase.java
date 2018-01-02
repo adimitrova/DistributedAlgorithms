@@ -26,7 +26,7 @@ public class MainShowcase {
 
         int[] portNumbersLaurens = {2007, 2004, 2009, 2012, 2001};
         int[] portNumbersAni = {2021, 2026, 2023, 2024, 2025, 2010};
-        int amountFaulty = 3 ;
+        int amountFaulty = 3; 
 
         // Create the fully connected Network
         for (int i = 0; i< IDsLaurens.length; i++) {
@@ -52,6 +52,7 @@ public class MainShowcase {
                     tempIpPorts.add(otherNodeIp);
                 }
             }
+
             if(ip.equals(ipLaurens)) {
                 if (ID == 0 || ID == 2) {
                     bindRMIComponent(port, ip, tempIpPorts, ID, (IDsAni.length + IDsLaurens.length), amountFaulty, 1);
@@ -78,12 +79,32 @@ public class MainShowcase {
         byzantines.get(1).setTraitor('O');
 
         try {
-//            TimeUnit.SECONDS.sleep(5);
+        	//TimeUnit.SECONDS.sleep(3);
             general.broadcast('N', 1, 1);
 
         } catch (Exception e){
             e.printStackTrace();
         }
+
+        /*// now check whether agreement is reached
+        boolean[] decidedArray = new boolean[byzantines.size()];
+        for (int i = 0; i < byzantines.size(); i++) {
+            int countDecided = 0;
+            try {
+                if (byzantines.get(i).hasDecided()) {
+                    decidedArray[i] = true;
+                    countDecided++;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(countDecided == ipPortList.size()-amountFaulty){
+                System.out.println("All loyal processes have decided :)!");
+                for (Byzantine byzantine: byzantines) {
+                    System.out.println("Byzantine with ID = " + byzantine.getID() + " has decided: " + byzantine.getValue());
+                }
+            }
+        }*/
     }
 
     /**
